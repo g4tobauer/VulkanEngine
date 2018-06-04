@@ -60,6 +60,7 @@ void Core::initVulkan()
 	}
 	pVulkanInstanceEngine->createInstance();
 	pVulkanDebugCallbackEngine->setupDebugCallback();
+	pWindowEngine->createSurface();
 	pVulkanDeviceEngine->pickPhysicalDevice();
 	pVulkanDeviceEngine->createLogicalDevice();
 }
@@ -76,6 +77,7 @@ void Core::cleanup()
 {
 	pVulkanDeviceEngine->destroyDevice();
 	pVulkanDebugCallbackEngine->destroyDebugCallback();
+	pWindowEngine->destroySurface();
 	pVulkanInstanceEngine->destroyInstance();
 	pWindowEngine->destroyWindow();
 }

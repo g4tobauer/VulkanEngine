@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <vector>
+#include <set>
 
 #endif // !ENGINE_COMMON_HEADERS
 

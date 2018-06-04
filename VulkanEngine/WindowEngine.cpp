@@ -11,6 +11,7 @@ WindowEngine::~WindowEngine()
 {
 	pCore = NULL;
 	pWindow = NULL;
+	pSurface = NULL;
 }
 
 void WindowEngine::createWindow()
@@ -18,7 +19,14 @@ void WindowEngine::createWindow()
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	pWindow = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+	pWindow = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", NULL, NULL);
+}
+void WindowEngine::createSurface()
+{	
+	if (glfwCreateWindowSurface(*pCore->pVulkanInstanceEngine->pInstance, pWindow, NULL, &surface) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create window surface!");
+	}
+	pSurface = &surface;
 }
 bool WindowEngine::isOpen()
 {
@@ -33,6 +41,10 @@ void WindowEngine::putRequiredInstanceExtensions(std::vector<const char*> *engin
 	const char** glfwExtensions;
 	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 	engineExtensions->assign(glfwExtensions, glfwExtensions + glfwExtensionCount);
+}
+void WindowEngine::destroySurface()
+{
+	vkDestroySurfaceKHR(*pCore->pVulkanInstanceEngine->pInstance, surface, NULL);
 }
 void WindowEngine::destroyWindow()
 {
