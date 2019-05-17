@@ -51,7 +51,7 @@ void VulkanInstanceEngine::setupCreateInfo()
 	createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &appInfo;
-	createInfo.enabledExtensionCount = pCore->engineExtentions.size();
+	createInfo.enabledExtensionCount = static_cast<uint32_t>(pCore->engineExtentions.size());
 	createInfo.ppEnabledExtensionNames = pCore->engineExtentions.data();
 	if (enableValidationLayers) 
 	{
@@ -60,6 +60,7 @@ void VulkanInstanceEngine::setupCreateInfo()
 	}else 
 	{
 		createInfo.enabledLayerCount = 0;
+		createInfo.pNext = NULL;
 	}
 }
 

@@ -35,12 +35,12 @@ bool WindowEngine::isOpen()
 	glfwPollEvents();
 	return true;
 }
-void WindowEngine::putRequiredInstanceExtensions(std::vector<const char*> *engineExtensions)
+void WindowEngine::putRequiredInstanceExtensions()
 {
 	uint32_t glfwExtensionCount = 0;
 	const char** glfwExtensions;
 	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-	engineExtensions->assign(glfwExtensions, glfwExtensions + glfwExtensionCount);
+	pCore->engineExtentions.assign(glfwExtensions, glfwExtensions + glfwExtensionCount);
 }
 void WindowEngine::destroySurface()
 {

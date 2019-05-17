@@ -16,7 +16,7 @@ public:
 	void createWindow();
 	void createSurface();
 	bool isOpen();
-	void putRequiredInstanceExtensions(std::vector<const char*> *engineExtensions);
+	void putRequiredInstanceExtensions();
 	void destroySurface();
 	void destroyWindow();
 

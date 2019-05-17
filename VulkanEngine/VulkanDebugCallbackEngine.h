@@ -10,20 +10,33 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugReportFlagsEXT flags,
 	return VK_FALSE;
 }
 
+static VKAPI_ATTR VkBool32 VKAPI_CALL messengerCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
+	std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+
+	return VK_FALSE;
+}
+
 class VulkanDebugCallbackEngine : BaseEngine
 {
 public:
+
 	VulkanDebugCallbackEngine(Core* core);
 	~VulkanDebugCallbackEngine();
 
 	void setupDebugCallback();
-	void putExtensions(std::vector<const char*> *extensions);
+	void putExtensions();
 	void destroyDebugCallback();
 private:
-	VkDebugReportCallbackEXT callback;
-	VkDebugReportCallbackCreateInfoEXT createInfo;
+	VkDebugReportCallbackCreateInfoEXT debugReportCallbackCreateInfo;
+	VkDebugUtilsMessengerCreateInfoEXT utilsMessengerCreateInfo;
+	VkDebugReportCallbackEXT debugReportCallback;
+	VkDebugUtilsMessengerEXT utilsMessengerCallback;
 
-	void setupDebugCallbackCreateInfo();
+	void setupDebugReportCallbackCreateInfo();
+	void setupUtilsMessengerCreateInfo();
+
+	VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
+	void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
 
 	VkResult CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback);
 	void DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator);

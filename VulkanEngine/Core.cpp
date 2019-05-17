@@ -37,11 +37,7 @@ void Core::run()
 
 void Core::putRequiredExtensions()
 {	
-	pWindowEngine->putRequiredInstanceExtensions(&engineExtentions);
-	if (enableValidationLayers) 
-	{
-		pVulkanDebugCallbackEngine->putExtensions(&engineExtentions);
-	}
+	pVulkanDebugCallbackEngine->putExtensions();
 }
 #pragma endregion
 
