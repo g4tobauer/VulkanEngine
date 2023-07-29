@@ -29,15 +29,25 @@ private:
 	VkPhysicalDeviceFeatures deviceFeatures;
 	VkDeviceCreateInfo createInfo;
 
+	//std::optional<uint32_t> graphicsFamily;
+	//std::optional<uint32_t> presentFamily;
+	////std::optional<float> queuePriority = 1.0f;
+
+	//bool isComplete() {
+	//	return graphicsFamily.has_value() && presentFamily.has_value();
+	//}
 	struct QueueFamilyIndices
 	{
+		std::optional<uint32_t> graphicsFamily;
+		std::optional<uint32_t> presentFamily;
 		float queuePriority = 1.0f;
-		int graphicsFamily = -1;
-		int presentFamily = -1;
+		//int graphicsFamily = -1;
+		//int presentFamily = -1;
 
 		bool isComplete()
 		{
-			return graphicsFamily >= 0 && presentFamily >= 0;
+			return graphicsFamily.has_value() && presentFamily.has_value();
+			//return graphicsFamily.has_value() && presentFamily >= 0;
 		}
 	} indices;
 

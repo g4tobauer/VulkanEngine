@@ -35,10 +35,6 @@ void Core::run()
 	cleanup();
 }
 
-void Core::putRequiredExtensions()
-{	
-	pVulkanDebugCallbackEngine->putExtensions();
-}
 #pragma endregion
 
 #pragma region Private
@@ -55,7 +51,6 @@ void Core::initVulkan()
 		throw std::runtime_error("validation layers requested, but not available!");
 	}
 	pVulkanInstanceEngine->createInstance();
-	pVulkanDebugCallbackEngine->setupDebugCallback();
 	pWindowEngine->createSurface();
 	pVulkanDeviceEngine->pickPhysicalDevice();
 	pVulkanDeviceEngine->createLogicalDevice();
@@ -103,7 +98,6 @@ bool Core::checkValidationLayerSupport()
 			return false;
 		}
 	}
-	putRequiredExtensions();
 	return true;
 }
 #pragma endregion

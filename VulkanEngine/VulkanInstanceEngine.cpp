@@ -25,6 +25,7 @@ void VulkanInstanceEngine::createInstance()
 		throw std::runtime_error("failed to create instance!");
 	}
 	pInstance = &instance;
+	pCore->pVulkanDebugCallbackEngine->createDebugCallback();
 }
 
 void VulkanInstanceEngine::destroyInstance()
@@ -51,12 +52,17 @@ void VulkanInstanceEngine::setupCreateInfo()
 	createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &appInfo;
+
+	pCore->pVulkanDebugCallbackEngine->putExtensions();
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(pCore->engineExtentions.size());
 	createInfo.ppEnabledExtensionNames = pCore->engineExtentions.data();
 	if (enableValidationLayers) 
 	{
 		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 		createInfo.ppEnabledLayerNames = validationLayers.data();
+
+		pCore->pVulkanDebugCallbackEngine->setupDebugCallback();
+		createInfo.pNext = &(pCore->pVulkanDebugCallbackEngine->utilsMessengerCreateInfo);
 	}else 
 	{
 		createInfo.enabledLayerCount = 0;

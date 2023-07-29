@@ -63,8 +63,8 @@ void VulkanDeviceEngine::createLogicalDevice()
 	if (vkCreateDevice(physicalDevice, &createInfo, NULL, &device) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create logical device!");
 	}
-	vkGetDeviceQueue(device, indices.graphicsFamily, 0, &graphicsQueue);
-	vkGetDeviceQueue(device, indices.presentFamily, 0, &presentQueue);
+	vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+	vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 
 	pDevice = &device;
 	pGraphicsQueue = &graphicsQueue;
@@ -81,9 +81,9 @@ void VulkanDeviceEngine::destroyDevice()
 
 void VulkanDeviceEngine::setupQueueCreateInfo()
 {
-	std::set<int> uniqueQueueFamilies = { indices.graphicsFamily, indices.presentFamily };
+	std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
-	for (int queueFamily : uniqueQueueFamilies) {
+	for (uint32_t queueFamily : uniqueQueueFamilies) {
 		VkDeviceQueueCreateInfo queueCreateInfo = {};
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 		queueCreateInfo.queueFamilyIndex = queueFamily;
@@ -116,6 +116,14 @@ void VulkanDeviceEngine::setupDeviceCreateInfo()
 
 bool VulkanDeviceEngine::isDeviceSuitable(VkPhysicalDevice device) 
 {
+	/*
+	VkPhysicalDeviceProperties deviceProperties;
+	vkGetPhysicalDeviceProperties(device, &deviceProperties);
+
+	VkPhysicalDeviceFeatures deviceFeatures;
+	vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+	*/
+
 	findQueueFamilies(device);
 	return indices.isComplete();
 }

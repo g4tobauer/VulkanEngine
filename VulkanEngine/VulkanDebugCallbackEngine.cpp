@@ -14,16 +14,21 @@ VulkanDebugCallbackEngine::~VulkanDebugCallbackEngine()
 	debugReportCallbackCreateInfo = {};
 	utilsMessengerCreateInfo = {};
 }
+
 void VulkanDebugCallbackEngine::setupDebugCallback()
 {
 	if (!enableValidationLayers) return;
 	setupDebugReportCallbackCreateInfo();
 	setupUtilsMessengerCreateInfo();
-	if (CreateDebugReportCallbackEXT(*pCore->pVulkanInstanceEngine->pInstance, &debugReportCallbackCreateInfo, NULL, &debugReportCallback) != VK_SUCCESS)
+}
+void VulkanDebugCallbackEngine::createDebugCallback()
+{
+	if (!enableValidationLayers) return;
+	if (CreateDebugUtilsMessengerEXT(*pCore->pVulkanInstanceEngine->pInstance, &utilsMessengerCreateInfo, NULL, &utilsMessengerCallback) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to set up debug callback!");
 	}
-	if (CreateDebugUtilsMessengerEXT(*pCore->pVulkanInstanceEngine->pInstance, &utilsMessengerCreateInfo, NULL, &utilsMessengerCallback) != VK_SUCCESS)
+	if (CreateDebugReportCallbackEXT(*pCore->pVulkanInstanceEngine->pInstance, &debugReportCallbackCreateInfo, NULL, &debugReportCallback) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to set up debug callback!");
 	}
@@ -48,13 +53,6 @@ void VulkanDebugCallbackEngine::destroyDebugCallback()
 #pragma endregion
 
 #pragma region Private
-void VulkanDebugCallbackEngine::setupDebugReportCallbackCreateInfo()
-{
-	debugReportCallbackCreateInfo = {};
-	debugReportCallbackCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-	debugReportCallbackCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-	debugReportCallbackCreateInfo.pfnCallback = debugCallback;
-}
 void VulkanDebugCallbackEngine::setupUtilsMessengerCreateInfo()
 {
 	utilsMessengerCreateInfo = {};
@@ -64,9 +62,17 @@ void VulkanDebugCallbackEngine::setupUtilsMessengerCreateInfo()
 	utilsMessengerCreateInfo.pfnUserCallback = messengerCallback;
 }
 
+void VulkanDebugCallbackEngine::setupDebugReportCallbackCreateInfo()
+{
+	debugReportCallbackCreateInfo = {};
+	debugReportCallbackCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+	debugReportCallbackCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+	debugReportCallbackCreateInfo.pfnCallback = debugCallback;
+}
+
 VkResult VulkanDebugCallbackEngine::CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
 	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-	if (func != nullptr) {
+	if (func != NULL) {
 		return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
 	}
 	else {

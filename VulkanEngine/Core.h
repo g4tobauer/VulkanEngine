@@ -44,7 +44,6 @@ private:
 	void initVulkan();
 	void mainLoop();
 	void cleanup();
-	void putRequiredExtensions();
 	bool checkValidationLayerSupport();
 };
 #endif // !ENGINE_CORE

@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <vector>
 #include <set>
+#include <optional>
 
 #endif // !ENGINE_COMMON_HEADERS
 

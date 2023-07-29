@@ -19,21 +19,22 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL messengerCallback(VkDebugUtilsMessageSever
 class VulkanDebugCallbackEngine : BaseEngine
 {
 public:
+	VkDebugUtilsMessengerCreateInfoEXT utilsMessengerCreateInfo;
+	VkDebugReportCallbackCreateInfoEXT debugReportCallbackCreateInfo;
 
 	VulkanDebugCallbackEngine(Core* core);
 	~VulkanDebugCallbackEngine();
 
 	void setupDebugCallback();
+	void createDebugCallback();
 	void putExtensions();
 	void destroyDebugCallback();
 private:
-	VkDebugReportCallbackCreateInfoEXT debugReportCallbackCreateInfo;
-	VkDebugUtilsMessengerCreateInfoEXT utilsMessengerCreateInfo;
 	VkDebugReportCallbackEXT debugReportCallback;
 	VkDebugUtilsMessengerEXT utilsMessengerCallback;
 
-	void setupDebugReportCallbackCreateInfo();
 	void setupUtilsMessengerCreateInfo();
+	void setupDebugReportCallbackCreateInfo();
 
 	VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
 	void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
