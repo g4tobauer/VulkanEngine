@@ -12,13 +12,27 @@ public:
 	VkQueue* pGraphicsQueue;
 	VkQueue* pPresentQueue;
 
+	struct QueueFamilyIndices
+	{
+		std::optional<uint32_t> graphicsFamily;
+		std::optional<uint32_t> presentFamily;
+		float queuePriority = 1.0f;
+		//int graphicsFamily = -1;
+		//int presentFamily = -1;
+
+		bool isComplete()
+		{
+			return graphicsFamily.has_value() && presentFamily.has_value();
+			//return graphicsFamily.has_value() && presentFamily >= 0;
+		}
+	} indices;
+
 	VulkanDeviceEngine(Core* core);
 	~VulkanDeviceEngine();
 
 	void pickPhysicalDevice();
 	void createLogicalDevice();
 	void destroyDevice();
-
 private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkQueue graphicsQueue;
@@ -36,20 +50,6 @@ private:
 	//bool isComplete() {
 	//	return graphicsFamily.has_value() && presentFamily.has_value();
 	//}
-	struct QueueFamilyIndices
-	{
-		std::optional<uint32_t> graphicsFamily;
-		std::optional<uint32_t> presentFamily;
-		float queuePriority = 1.0f;
-		//int graphicsFamily = -1;
-		//int presentFamily = -1;
-
-		bool isComplete()
-		{
-			return graphicsFamily.has_value() && presentFamily.has_value();
-			//return graphicsFamily.has_value() && presentFamily >= 0;
-		}
-	} indices;
 
 	void setupQueueCreateInfo();
 	void setupDeviceCreateInfo();

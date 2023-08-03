@@ -8,10 +8,14 @@ Core::Core()
 	pVulkanInstanceEngine = new VulkanInstanceEngine(this);
 	pVulkanDebugCallbackEngine = new VulkanDebugCallbackEngine(this);
 	pVulkanDeviceEngine = new VulkanDeviceEngine(this);
+	pVulkanSwapChainEngine = new VulkanSwapChainEngine(this);
 }
 
 Core::~Core()
 {
+	delete pVulkanSwapChainEngine;
+	pVulkanSwapChainEngine = NULL;
+
 	delete pVulkanDeviceEngine;
 	pVulkanDeviceEngine = NULL;
 
@@ -54,6 +58,7 @@ void Core::initVulkan()
 	pWindowEngine->createSurface();
 	pVulkanDeviceEngine->pickPhysicalDevice();
 	pVulkanDeviceEngine->createLogicalDevice();
+	pVulkanSwapChainEngine->createSwapChain();
 }
 
 void Core::mainLoop()
@@ -66,6 +71,7 @@ void Core::mainLoop()
 
 void Core::cleanup()
 {
+	pVulkanSwapChainEngine->destroySwapChain();
 	pVulkanDeviceEngine->destroyDevice();
 	pVulkanDebugCallbackEngine->destroyDebugCallback();
 	pWindowEngine->destroySurface();

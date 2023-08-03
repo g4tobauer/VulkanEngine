@@ -24,6 +24,7 @@
     <ClCompile Include="VulkanDebugCallbackEngine.cpp" />
     <ClCompile Include="VulkanDeviceEngine.cpp" />
     <ClCompile Include="VulkanInstanceEngine.cpp" />
+    <ClCompile Include="VulkanSwapChainEngine.cpp" />
     <ClCompile Include="WindowEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -33,6 +34,7 @@
     <ClInclude Include="VulkanDebugCallbackEngine.h" />
     <ClInclude Include="VulkanDeviceEngine.h" />
     <ClInclude Include="VulkanInstanceEngine.h" />
+    <ClInclude Include="VulkanSwapChainEngine.h" />
     <ClInclude Include="WindowEngine.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

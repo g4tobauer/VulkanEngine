@@ -10,6 +10,7 @@
 #include "VulkanInstanceEngine.h"
 #include "VulkanDebugCallbackEngine.h"
 #include "VulkanDeviceEngine.h"
+#include "VulkanSwapChainEngine.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -18,6 +19,10 @@ const std::vector<const char*> validationLayers =
 {
 	"VK_LAYER_KHRONOS_validation",
 	"VK_LAYER_LUNARG_standard_validation"
+};
+
+const std::vector<const char*> deviceExtensions = {
+	VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
 
 #ifdef NDEBUG
@@ -33,6 +38,7 @@ public:
 	VulkanInstanceEngine* pVulkanInstanceEngine;
 	VulkanDebugCallbackEngine* pVulkanDebugCallbackEngine;
 	VulkanDeviceEngine* pVulkanDeviceEngine;
+	VulkanSwapChainEngine* pVulkanSwapChainEngine;
 	std::vector<const char*> engineExtentions;
 
 	Core();

@@ -11,6 +11,10 @@
 #include <vector>
 #include <set>
 #include <optional>
+#include <algorithm>
+#include <cstring>
+#include <cstdint>
+#include <limits>
 
 #endif // !ENGINE_COMMON_HEADERS
 

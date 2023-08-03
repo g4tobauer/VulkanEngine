@@ -101,7 +101,9 @@ void VulkanDeviceEngine::setupDeviceCreateInfo()
 	createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 	createInfo.pQueueCreateInfos = queueCreateInfos.data();
 	createInfo.pEnabledFeatures = &deviceFeatures;
-	createInfo.enabledExtensionCount = 0;
+
+	createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+	createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
 	if (enableValidationLayers) 
 	{
@@ -135,19 +137,19 @@ void VulkanDeviceEngine::findQueueFamilies(VkPhysicalDevice device)
 	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 	int i = 0;
-	for (const auto& queueFamily : queueFamilies) 
+	for (const auto& queueFamily : queueFamilies)
 	{
-		if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) 
+		if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 		{
 			indices.graphicsFamily = i;
 		}
 		VkBool32 presentSupport = false;
 		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, *pCore->pWindowEngine->pSurface, &presentSupport);
-		if (queueFamily.queueCount > 0 && presentSupport) 
+		if (queueFamily.queueCount > 0 && presentSupport)
 		{
 			indices.presentFamily = i;
 		}
-		if (indices.isComplete()) 
+		if (indices.isComplete())
 		{
 			break;
 		}
