@@ -10,7 +10,8 @@ public:
 	VulkanSwapChainEngine(Core* core);
 	~VulkanSwapChainEngine();
 
-    void createSwapChain();
+    void createSwapChain(); 
+    void createImageViews(); 
     void destroySwapChain();
 private:
 
@@ -18,6 +19,7 @@ private:
     VkFormat swapChainImageFormat;
     VkExtent2D swapChainExtent;
     std::vector<VkImage> swapChainImages;
+    std::vector<VkImageView> swapChainImageViews;
 
     struct SwapChainSupportDetails {
         VkSurfaceCapabilitiesKHR capabilities;
