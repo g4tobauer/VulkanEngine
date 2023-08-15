@@ -16,6 +16,9 @@
     <Filter Include="Source Files\engine">
       <UniqueIdentifier>{a6c11be8-b874-476a-aa43-a516c9f210b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{2ac62862-4dcb-42cb-baa2-28aa556ad0e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -37,6 +40,12 @@
       <Filter>Source Files\engine</Filter>
     </ClCompile>
     <ClCompile Include="VulkanSwapChainEngine.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanGraphicPipelineEngine.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FileStreamEngine.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,5 +74,22 @@
     <ClInclude Include="VulkanSwapChainEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VulkanGraphicPipelineEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileStreamEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\compile.bat">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="shaders\shader.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="shaders\shader.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

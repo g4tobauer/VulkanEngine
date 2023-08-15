@@ -20,9 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="FileStreamEngine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VulkanDebugCallbackEngine.cpp" />
     <ClCompile Include="VulkanDeviceEngine.cpp" />
+    <ClCompile Include="VulkanGraphicPipelineEngine.cpp" />
     <ClCompile Include="VulkanInstanceEngine.cpp" />
     <ClCompile Include="VulkanSwapChainEngine.cpp" />
     <ClCompile Include="WindowEngine.cpp" />
@@ -31,11 +33,18 @@
     <ClInclude Include="BaseEngine.h" />
     <ClInclude Include="CommonHeaders.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="FileStreamEngine.h" />
     <ClInclude Include="VulkanDebugCallbackEngine.h" />
     <ClInclude Include="VulkanDeviceEngine.h" />
+    <ClInclude Include="VulkanGraphicPipelineEngine.h" />
     <ClInclude Include="VulkanInstanceEngine.h" />
     <ClInclude Include="VulkanSwapChainEngine.h" />
     <ClInclude Include="WindowEngine.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\compile.bat" />
+    <None Include="shaders\shader.frag" />
+    <None Include="shaders\shader.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EFB042AE-8B80-4355-9311-34671EE82057}</ProjectGuid>

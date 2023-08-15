@@ -4,15 +4,23 @@
 
 Core::Core()
 {
+	pFileStreamEngine = new FileStreamEngine(this);
 	pWindowEngine = new WindowEngine(this);
 	pVulkanInstanceEngine = new VulkanInstanceEngine(this);
 	pVulkanDebugCallbackEngine = new VulkanDebugCallbackEngine(this);
 	pVulkanDeviceEngine = new VulkanDeviceEngine(this);
 	pVulkanSwapChainEngine = new VulkanSwapChainEngine(this);
+	pVulkanGraphicPipelineEngine = new VulkanGraphicPipelineEngine(this);	
 }
 
 Core::~Core()
 {
+	delete pFileStreamEngine;
+	pFileStreamEngine = NULL;
+
+	delete pVulkanGraphicPipelineEngine;
+	pVulkanGraphicPipelineEngine = NULL;
+
 	delete pVulkanSwapChainEngine;
 	pVulkanSwapChainEngine = NULL;
 
@@ -60,6 +68,7 @@ void Core::initVulkan()
 	pVulkanDeviceEngine->createLogicalDevice();
 	pVulkanSwapChainEngine->createSwapChain();
 	pVulkanSwapChainEngine->createImageViews();
+	pVulkanGraphicPipelineEngine->createGraphicsPipeline();
 }
 
 void Core::mainLoop()

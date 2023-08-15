@@ -15,6 +15,7 @@
 #include <cstring>
 #include <cstdint>
 #include <limits>
+#include <fstream>
 
 #endif // !ENGINE_COMMON_HEADERS
 

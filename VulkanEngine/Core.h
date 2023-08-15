@@ -6,11 +6,13 @@
 #include "CommonHeaders.h"
 #endif // !ENGINE_COMMON_HEADERS
 
+#include "FileStreamEngine.h"
 #include "WindowEngine.h"
 #include "VulkanInstanceEngine.h"
 #include "VulkanDebugCallbackEngine.h"
 #include "VulkanDeviceEngine.h"
 #include "VulkanSwapChainEngine.h"
+#include "VulkanGraphicPipelineEngine.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -34,11 +36,14 @@ const bool enableValidationLayers = true;
 class Core
 {
 public:
+	FileStreamEngine* pFileStreamEngine;
 	WindowEngine* pWindowEngine;
 	VulkanInstanceEngine* pVulkanInstanceEngine;
 	VulkanDebugCallbackEngine* pVulkanDebugCallbackEngine;
 	VulkanDeviceEngine* pVulkanDeviceEngine;
 	VulkanSwapChainEngine* pVulkanSwapChainEngine;
+	VulkanGraphicPipelineEngine* pVulkanGraphicPipelineEngine;
+	
 	std::vector<const char*> engineExtentions;
 
 	Core();
