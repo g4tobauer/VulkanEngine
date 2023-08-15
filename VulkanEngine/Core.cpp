@@ -81,6 +81,7 @@ void Core::mainLoop()
 
 void Core::cleanup()
 {
+	pVulkanGraphicPipelineEngine->destroyGraphicsPipeline();
 	pVulkanSwapChainEngine->destroySwapChain();
 	pVulkanDeviceEngine->destroyDevice();
 	pVulkanDebugCallbackEngine->destroyDebugCallback();

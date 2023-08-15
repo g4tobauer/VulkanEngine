@@ -11,7 +11,9 @@ public:
 	~VulkanGraphicPipelineEngine();
 
 	void createGraphicsPipeline();
+	void destroyGraphicsPipeline();
 private:
+	VkPipelineLayout pipelineLayout;
 	VkShaderModule createShaderModule(const std::vector<char>& code);
 };
 #endif // !ENGINE_VULKAN_GRAPHIC_PIPELINE
