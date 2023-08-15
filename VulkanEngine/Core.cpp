@@ -67,7 +67,6 @@ void Core::initVulkan()
 	pVulkanDeviceEngine->pickPhysicalDevice();
 	pVulkanDeviceEngine->createLogicalDevice();
 	pVulkanSwapChainEngine->createSwapChain();
-	pVulkanSwapChainEngine->createImageViews();
 	pVulkanGraphicPipelineEngine->createGraphicsPipeline();
 }
 

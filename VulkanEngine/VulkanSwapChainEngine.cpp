@@ -72,7 +72,20 @@ void VulkanSwapChainEngine::createSwapChain()
     swapChainImageFormat = surfaceFormat.format;
     pSwapChainImageFormat = &swapChainImageFormat;
     swapChainExtent = extent;
+
+    createImageViews();
 }
+void VulkanSwapChainEngine::destroySwapChain()
+{
+    for (auto imageView : swapChainImageViews) {
+        vkDestroyImageView(*(pCore->pVulkanDeviceEngine->pDevice), imageView, nullptr);
+    }
+	vkDestroySwapchainKHR(*(pCore->pVulkanDeviceEngine->pDevice), swapChain, nullptr);
+}
+#pragma endregion
+
+
+#pragma region Private
 
 void VulkanSwapChainEngine::createImageViews()
 {
@@ -99,17 +112,7 @@ void VulkanSwapChainEngine::createImageViews()
         }
     }
 }
-void VulkanSwapChainEngine::destroySwapChain()
-{
-    for (auto imageView : swapChainImageViews) {
-        vkDestroyImageView(*(pCore->pVulkanDeviceEngine->pDevice), imageView, nullptr);
-    }
-	vkDestroySwapchainKHR(*(pCore->pVulkanDeviceEngine->pDevice), swapChain, nullptr);
-}
-#pragma endregion
 
-
-#pragma region Private
 VulkanSwapChainEngine::SwapChainSupportDetails VulkanSwapChainEngine::querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
     SwapChainSupportDetails details;

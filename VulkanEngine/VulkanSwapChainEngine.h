@@ -13,7 +13,6 @@ public:
 	~VulkanSwapChainEngine();
 
     void createSwapChain(); 
-    void createImageViews(); 
     void destroySwapChain();
 private:
 
@@ -29,6 +28,7 @@ private:
         std::vector<VkPresentModeKHR> presentModes;
     };
 
+    void createImageViews();
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
     VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
