@@ -13,7 +13,11 @@ public:
 	void createGraphicsPipeline();
 	void destroyGraphicsPipeline();
 private:
+	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
+	
+	void createRenderPass();
+	void destroyRenderPass();
 	VkShaderModule createShaderModule(const std::vector<char>& code);
 };
 #endif // !ENGINE_VULKAN_GRAPHIC_PIPELINE

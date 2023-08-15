@@ -10,6 +10,7 @@ FileStreamEngine::FileStreamEngine(Core* core)
 
 FileStreamEngine::~FileStreamEngine()
 {
+    pCore = NULL;
 }
 
 std::vector<char> FileStreamEngine::readFile(const std::string& filename) {

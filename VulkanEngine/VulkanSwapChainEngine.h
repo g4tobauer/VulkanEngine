@@ -7,6 +7,8 @@
 class VulkanSwapChainEngine : BaseEngine
 {
 public:
+    VkFormat* pSwapChainImageFormat;
+
 	VulkanSwapChainEngine(Core* core);
 	~VulkanSwapChainEngine();
 

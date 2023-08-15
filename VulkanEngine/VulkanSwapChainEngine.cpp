@@ -10,6 +10,7 @@ VulkanSwapChainEngine::VulkanSwapChainEngine(Core* core)
 VulkanSwapChainEngine::~VulkanSwapChainEngine()
 {
 	pCore = NULL;
+    pSwapChainImageFormat = NULL;
 
     swapChain = NULL;
 
@@ -69,6 +70,7 @@ void VulkanSwapChainEngine::createSwapChain()
     vkGetSwapchainImagesKHR(*(pCore->pVulkanDeviceEngine->pDevice), swapChain, &imageCount, swapChainImages.data());
 
     swapChainImageFormat = surfaceFormat.format;
+    pSwapChainImageFormat = &swapChainImageFormat;
     swapChainExtent = extent;
 }
 
