@@ -7,6 +7,7 @@
 class VulkanSwapChainEngine : BaseEngine
 {
 public:
+    VkSwapchainKHR* pSwapChain;
     VkFormat* pSwapChainImageFormat;
     VkRenderPass* pRenderPass;
     VkExtent2D* pSwapChainExtent;

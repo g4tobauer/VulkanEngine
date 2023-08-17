@@ -51,6 +51,9 @@
     <ClCompile Include="VulkanCommandPoolEngine.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
+    <ClCompile Include="VulkanSemaphoresEngine.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h">
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VulkanCommandPoolEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanSemaphoresEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

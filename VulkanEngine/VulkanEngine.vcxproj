@@ -27,6 +27,7 @@
     <ClCompile Include="VulkanDeviceEngine.cpp" />
     <ClCompile Include="VulkanGraphicPipelineEngine.cpp" />
     <ClCompile Include="VulkanInstanceEngine.cpp" />
+    <ClCompile Include="VulkanSemaphoresEngine.cpp" />
     <ClCompile Include="VulkanSwapChainEngine.cpp" />
     <ClCompile Include="WindowEngine.cpp" />
   </ItemGroup>
@@ -40,6 +41,7 @@
     <ClInclude Include="VulkanDeviceEngine.h" />
     <ClInclude Include="VulkanGraphicPipelineEngine.h" />
     <ClInclude Include="VulkanInstanceEngine.h" />
+    <ClInclude Include="VulkanSemaphoresEngine.h" />
     <ClInclude Include="VulkanSwapChainEngine.h" />
     <ClInclude Include="WindowEngine.h" />
   </ItemGroup>

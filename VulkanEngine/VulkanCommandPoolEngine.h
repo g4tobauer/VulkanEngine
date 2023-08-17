@@ -7,16 +7,20 @@
 class VulkanCommandPoolEngine : BaseEngine
 {
 public:
+	VkCommandBuffer* pCommandBuffer;
+
 	VulkanCommandPoolEngine(Core* core);
 	~VulkanCommandPoolEngine();
 	
 	void createCommandPool();
 	void destroyCommandPool();
+
 	void createCommandBuffer();
+	
+	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 private:
 	VkCommandPool commandPool;
 	VkCommandBuffer commandBuffer;
 
-	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 };
 #endif // !ENGINE_VULKAN_COMMAND_POOL

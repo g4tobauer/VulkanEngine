@@ -14,6 +14,7 @@
 #include "VulkanSwapChainEngine.h"
 #include "VulkanGraphicPipelineEngine.h"
 #include "VulkanCommandPoolEngine.h"
+#include "VulkanSemaphoresEngine.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -45,6 +46,7 @@ public:
 	VulkanSwapChainEngine* pVulkanSwapChainEngine;
 	VulkanGraphicPipelineEngine* pVulkanGraphicPipelineEngine;
 	VulkanCommandPoolEngine* pVulkanCommandPoolEngine;
+	VulkanSemaphoresEngine* pVulkanSemaphoresEngine;
 	
 	std::vector<const char*> engineExtentions;
 

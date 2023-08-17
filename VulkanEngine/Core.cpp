@@ -12,12 +12,16 @@ Core::Core()
 	pVulkanSwapChainEngine = new VulkanSwapChainEngine(this);
 	pVulkanGraphicPipelineEngine = new VulkanGraphicPipelineEngine(this);	
 	pVulkanCommandPoolEngine = new VulkanCommandPoolEngine(this);
+	pVulkanSemaphoresEngine = new VulkanSemaphoresEngine(this);
 }
 
 Core::~Core()
 {
 	delete pFileStreamEngine;
 	pFileStreamEngine = NULL;
+	
+	delete pVulkanSemaphoresEngine;
+	pVulkanSemaphoresEngine = NULL;
 
 	delete pVulkanCommandPoolEngine;
 	pVulkanCommandPoolEngine = NULL;
@@ -76,18 +80,21 @@ void Core::initVulkan()
 	pVulkanSwapChainEngine->createFramebuffers();
 	pVulkanCommandPoolEngine->createCommandPool();
 	pVulkanCommandPoolEngine->createCommandBuffer();
+	pVulkanSemaphoresEngine->createSyncObjects();
 }
 
 void Core::mainLoop()
 {
 	while (pWindowEngine->isOpen())
 	{
-
+		pVulkanSemaphoresEngine->drawFrame();
 	}
+	vkDeviceWaitIdle(*(pVulkanDeviceEngine->pDevice));
 }
 
 void Core::cleanup()
 {
+	pVulkanSemaphoresEngine->destroySyncObjects();
 	pVulkanCommandPoolEngine->destroyCommandPool();
 	pVulkanSwapChainEngine->destroyFramebuffers();
 	pVulkanGraphicPipelineEngine->destroyGraphicsPipeline();

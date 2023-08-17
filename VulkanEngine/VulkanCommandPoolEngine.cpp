@@ -11,6 +11,7 @@ VulkanCommandPoolEngine::VulkanCommandPoolEngine(Core* core)
 VulkanCommandPoolEngine::~VulkanCommandPoolEngine()
 {
 	pCore = NULL;
+    pCommandBuffer = NULL;
 }
 
 void VulkanCommandPoolEngine::createCommandPool()
@@ -39,19 +40,16 @@ void VulkanCommandPoolEngine::createCommandBuffer()
     if (vkAllocateCommandBuffers(*(pCore->pVulkanDeviceEngine->pDevice), &allocInfo, &commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate command buffers!");
     }
+    pCommandBuffer = &commandBuffer;
 }
 
-#pragma endregion
-
-
-#pragma region Private
 void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
     if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
         throw std::runtime_error("failed to begin recording command buffer!");
-    }   
+    }
 
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -68,7 +66,7 @@ void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer,
 
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *(pCore->pVulkanGraphicPipelineEngine->pGraphicsPipeline));
 
-    
+
     VkViewport viewport{};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
