@@ -7,6 +7,8 @@
 class VulkanGraphicPipelineEngine : BaseEngine
 {
 public:
+	VkPipeline *pGraphicsPipeline;
+
 	VulkanGraphicPipelineEngine(Core* core);
 	~VulkanGraphicPipelineEngine();
 

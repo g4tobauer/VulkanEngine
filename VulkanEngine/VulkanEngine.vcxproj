@@ -22,6 +22,7 @@
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="FileStreamEngine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VulkanCommandPoolEngine.cpp" />
     <ClCompile Include="VulkanDebugCallbackEngine.cpp" />
     <ClCompile Include="VulkanDeviceEngine.cpp" />
     <ClCompile Include="VulkanGraphicPipelineEngine.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="CommonHeaders.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="FileStreamEngine.h" />
+    <ClInclude Include="VulkanCommandPoolEngine.h" />
     <ClInclude Include="VulkanDebugCallbackEngine.h" />
     <ClInclude Include="VulkanDeviceEngine.h" />
     <ClInclude Include="VulkanGraphicPipelineEngine.h" />

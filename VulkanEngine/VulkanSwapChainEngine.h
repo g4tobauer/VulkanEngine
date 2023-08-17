@@ -9,6 +9,8 @@ class VulkanSwapChainEngine : BaseEngine
 public:
     VkFormat* pSwapChainImageFormat;
     VkRenderPass* pRenderPass;
+    VkExtent2D* pSwapChainExtent;
+    std::vector<VkFramebuffer> pSwapChainFramebuffers;
 
 	VulkanSwapChainEngine(Core* core);
 	~VulkanSwapChainEngine();

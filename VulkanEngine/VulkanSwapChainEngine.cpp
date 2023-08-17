@@ -11,6 +11,7 @@ VulkanSwapChainEngine::~VulkanSwapChainEngine()
 {
 	pCore = NULL;
     pSwapChainImageFormat = NULL;
+    pSwapChainExtent = NULL;
     pRenderPass = NULL;
 
     swapChain = NULL;
@@ -72,7 +73,9 @@ void VulkanSwapChainEngine::createSwapChain()
 
     swapChainImageFormat = surfaceFormat.format;
     pSwapChainImageFormat = &swapChainImageFormat;
+
     swapChainExtent = extent;
+    pSwapChainExtent = &swapChainExtent;
 
     createImageViews();
 }
@@ -142,6 +145,8 @@ void VulkanSwapChainEngine::createFramebuffers() {
         if (vkCreateFramebuffer(*(pCore->pVulkanDeviceEngine->pDevice), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
             throw std::runtime_error("failed to create framebuffer!");
         }
+
+        pSwapChainFramebuffers = swapChainFramebuffers;
     }
 }
 void VulkanSwapChainEngine::destroyFramebuffers() {

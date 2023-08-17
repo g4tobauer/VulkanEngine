@@ -11,6 +11,7 @@ VulkanGraphicPipelineEngine::VulkanGraphicPipelineEngine(Core* core)
 VulkanGraphicPipelineEngine::~VulkanGraphicPipelineEngine()
 {
     pCore = NULL;
+    pGraphicsPipeline = NULL;
 }
 
 void VulkanGraphicPipelineEngine::createGraphicsPipeline()
@@ -117,6 +118,7 @@ void VulkanGraphicPipelineEngine::createGraphicsPipeline()
     if (vkCreateGraphicsPipelines(*(pCore->pVulkanDeviceEngine->pDevice), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
         throw std::runtime_error("failed to create graphics pipeline!");
     }
+    pGraphicsPipeline = &graphicsPipeline;
     
     vkDestroyShaderModule(*(pCore->pVulkanDeviceEngine->pDevice), fragShaderModule, nullptr);
     vkDestroyShaderModule(*(pCore->pVulkanDeviceEngine->pDevice), vertShaderModule, nullptr);
