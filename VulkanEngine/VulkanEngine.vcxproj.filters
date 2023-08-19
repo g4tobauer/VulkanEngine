@@ -92,6 +92,9 @@
     <ClInclude Include="VulkanSemaphoresEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CommonStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\compile.bat">

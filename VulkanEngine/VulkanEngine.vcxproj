@@ -34,6 +34,7 @@
   <ItemGroup>
     <ClInclude Include="BaseEngine.h" />
     <ClInclude Include="CommonHeaders.h" />
+    <ClInclude Include="CommonStructs.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="FileStreamEngine.h" />
     <ClInclude Include="VulkanCommandPoolEngine.h" />

@@ -14,6 +14,7 @@ VulkanDeviceEngine::~VulkanDeviceEngine()
 	deviceFeatures = {};
 	indices = {};
 
+	pIndices = NULL;
 	pGraphicsQueue = NULL;
 	graphicsQueue = NULL;
 
@@ -74,6 +75,33 @@ void VulkanDeviceEngine::createLogicalDevice()
 void VulkanDeviceEngine::destroyDevice()
 {
 	vkDestroyDevice(device, NULL);
+}
+
+SwapChainSupportDetails VulkanDeviceEngine::querySwapChainSupport()
+{
+	VkPhysicalDevice device = physicalDevice;
+	VkSurfaceKHR surface = *(pCore->pWindowEngine->pSurface);
+	SwapChainSupportDetails details;
+
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+
+	uint32_t formatCount;
+	vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+
+	if (formatCount != 0) {
+		details.formats.resize(formatCount);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
+	}
+
+	uint32_t presentModeCount;
+	vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
+
+	if (presentModeCount != 0) {
+		details.presentModes.resize(presentModeCount);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.data());
+	}
+
+	return details;
 }
 #pragma endregion
 
@@ -155,6 +183,7 @@ void VulkanDeviceEngine::findQueueFamilies(VkPhysicalDevice device)
 		}
 		i++;
 	}
+	pIndices = &indices;
 }
 
 #pragma endregion

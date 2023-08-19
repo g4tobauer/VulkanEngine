@@ -17,5 +17,9 @@
 #include <limits>
 #include <fstream>
 
+#ifndef ENGINE_COMMON_STRUCTS
+#include "CommonStructs.h"
+#endif // !#ifndef ENGINE_COMMON_HEADERS
+
 #endif // !ENGINE_COMMON_HEADERS
 

@@ -24,7 +24,7 @@ VulkanSwapChainEngine::~VulkanSwapChainEngine()
 
 void VulkanSwapChainEngine::createSwapChain()
 {    
-	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(*(pCore->pVulkanDeviceEngine->pPhysicalDevice), *(pCore->pWindowEngine->pSurface));
+	SwapChainSupportDetails swapChainSupport = pCore->pVulkanDeviceEngine->querySwapChainSupport();
     VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
     VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
     VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
@@ -45,7 +45,7 @@ void VulkanSwapChainEngine::createSwapChain()
     createInfo.imageArrayLayers = 1;
     createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-    VulkanDeviceEngine::QueueFamilyIndices indices = pCore->pVulkanDeviceEngine->indices;
+    QueueFamilyIndices indices = *(pCore->pVulkanDeviceEngine->pIndices);
     uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
     if (indices.graphicsFamily != indices.presentFamily) {
@@ -194,30 +194,6 @@ void VulkanSwapChainEngine::createImageViews()
             throw std::runtime_error("failed to create image views!");
         }
     }
-}
-VulkanSwapChainEngine::SwapChainSupportDetails VulkanSwapChainEngine::querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface)
-{
-    SwapChainSupportDetails details;
-
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
-
-    uint32_t formatCount;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
-
-    if (formatCount != 0) {
-        details.formats.resize(formatCount);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
-    }
-
-    uint32_t presentModeCount;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
-
-    if (presentModeCount != 0) {
-        details.presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.data());
-    }
-
-    return details;
 }
 VkSurfaceFormatKHR VulkanSwapChainEngine::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
     for (const auto& availableFormat : availableFormats) {

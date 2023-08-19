@@ -11,21 +11,8 @@ public:
 	VkDevice* pDevice;
 	VkQueue* pGraphicsQueue;
 	VkQueue* pPresentQueue;
+	QueueFamilyIndices* pIndices;
 
-	struct QueueFamilyIndices
-	{
-		std::optional<uint32_t> graphicsFamily;
-		std::optional<uint32_t> presentFamily;
-		float queuePriority = 1.0f;
-		//int graphicsFamily = -1;
-		//int presentFamily = -1;
-
-		bool isComplete()
-		{
-			return graphicsFamily.has_value() && presentFamily.has_value();
-			//return graphicsFamily.has_value() && presentFamily >= 0;
-		}
-	} indices;
 
 	VulkanDeviceEngine(Core* core);
 	~VulkanDeviceEngine();
@@ -33,7 +20,9 @@ public:
 	void pickPhysicalDevice();
 	void createLogicalDevice();
 	void destroyDevice();
+	SwapChainSupportDetails querySwapChainSupport();
 private:
+	QueueFamilyIndices indices;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
@@ -42,14 +31,6 @@ private:
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	VkPhysicalDeviceFeatures deviceFeatures;
 	VkDeviceCreateInfo createInfo;
-
-	//std::optional<uint32_t> graphicsFamily;
-	//std::optional<uint32_t> presentFamily;
-	////std::optional<float> queuePriority = 1.0f;
-
-	//bool isComplete() {
-	//	return graphicsFamily.has_value() && presentFamily.has_value();
-	//}
 
 	void setupQueueCreateInfo();
 	void setupDeviceCreateInfo();
