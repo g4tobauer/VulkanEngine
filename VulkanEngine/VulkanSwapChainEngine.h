@@ -16,17 +16,16 @@ public:
 	VulkanSwapChainEngine(Core* core);
 	~VulkanSwapChainEngine();
 
-    void createSwapChain(); 
-    void destroySwapChain();
-
+    void createSwapChain();
+    void recreateSwapChain();
+    void cleanupSwapChain();
+    
     void createRenderPass();
     void destroyRenderPass();
 
     void createFramebuffers();
-    void destroyFramebuffers();
 
     void createImageViews();
-    void destroyImageViews();
 private:
 
     VkSwapchainKHR swapChain;

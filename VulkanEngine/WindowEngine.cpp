@@ -18,8 +18,9 @@ void WindowEngine::createWindow()
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	pWindow = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", NULL, NULL);
+	glfwSetWindowUserPointer(pWindow, this);
+	glfwSetFramebufferSizeCallback(pWindow, framebufferResizeCallback);
 }
 void WindowEngine::createSurface()
 {	

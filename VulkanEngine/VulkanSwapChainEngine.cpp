@@ -79,9 +79,35 @@ void VulkanSwapChainEngine::createSwapChain()
     swapChainExtent = extent;
     pSwapChainExtent = &swapChainExtent;
 }
-void VulkanSwapChainEngine::destroySwapChain()
-{
-	vkDestroySwapchainKHR(*(pCore->pVulkanDeviceEngine->pDevice), swapChain, nullptr);
+
+void VulkanSwapChainEngine::recreateSwapChain() {
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(pCore->pWindowEngine->pWindow, &width, &height);
+    while (width == 0 || height == 0) {
+        glfwGetFramebufferSize(pCore->pWindowEngine->pWindow, &width, &height);
+        glfwWaitEvents();
+    }
+
+    vkDeviceWaitIdle(*(pCore->pVulkanDeviceEngine->pDevice));
+
+    cleanupSwapChain();
+
+    createSwapChain();
+    createImageViews();
+    createFramebuffers();
+}
+
+void VulkanSwapChainEngine::cleanupSwapChain() {
+    VkDevice device = *(pCore->pVulkanDeviceEngine->pDevice);
+    for (auto framebuffer : swapChainFramebuffers) {
+        vkDestroyFramebuffer(device, framebuffer, nullptr);
+    }
+
+    for (auto imageView : swapChainImageViews) {
+        vkDestroyImageView(device, imageView, nullptr);
+    }
+
+	vkDestroySwapchainKHR(device, swapChain, nullptr);
 }
 
 void VulkanSwapChainEngine::createRenderPass()
@@ -155,11 +181,6 @@ void VulkanSwapChainEngine::createFramebuffers() {
     }
     pSwapChainFramebuffers = swapChainFramebuffers;
 }
-void VulkanSwapChainEngine::destroyFramebuffers() {
-    for (auto framebuffer : swapChainFramebuffers) {
-        vkDestroyFramebuffer(*(pCore->pVulkanDeviceEngine->pDevice), framebuffer, nullptr);
-    }
-}
 
 void VulkanSwapChainEngine::createImageViews()
 {
@@ -183,12 +204,6 @@ void VulkanSwapChainEngine::createImageViews()
         if (vkCreateImageView(*(pCore->pVulkanDeviceEngine->pDevice), &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
             throw std::runtime_error("failed to create image views!");
         }
-    }
-}
-void VulkanSwapChainEngine::destroyImageViews()
-{
-    for (auto imageView : swapChainImageViews) {
-        vkDestroyImageView(*(pCore->pVulkanDeviceEngine->pDevice), imageView, nullptr);
     }
 }
 #pragma endregion

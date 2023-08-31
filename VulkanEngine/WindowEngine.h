@@ -7,6 +7,7 @@
 class WindowEngine : BaseEngine
 {
 public:
+	bool framebufferResized = false;
 	GLFWwindow* pWindow;
 	VkSurfaceKHR* pSurface;
 
@@ -22,5 +23,10 @@ public:
 
 private:
 	VkSurfaceKHR surface;
+
+	static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+		WindowEngine* app = reinterpret_cast<WindowEngine*>(glfwGetWindowUserPointer(window));
+		app->framebufferResized = true;
+	}
 };
 #endif // !ENGINE_WINDOW

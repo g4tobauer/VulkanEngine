@@ -39,10 +39,19 @@ void VulkanSemaphoresEngine::createSyncObjects()
 void VulkanSemaphoresEngine::drawFrame() {
     VkDevice device = *(pCore->pVulkanDeviceEngine->pDevice);
     vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
-    vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
     uint32_t imageIndex;
-    vkAcquireNextImageKHR(device, *(pCore->pVulkanSwapChainEngine->pSwapChain), UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+    VkResult result = vkAcquireNextImageKHR(device, *(pCore->pVulkanSwapChainEngine->pSwapChain), UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        pCore->pVulkanSwapChainEngine->recreateSwapChain();
+        return;
+    }
+    else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        throw std::runtime_error("failed to acquire swap chain image!");
+    }
+
+    vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
     vkResetCommandBuffer(pCore->pVulkanCommandPoolEngine->pCommandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
     pCore->pVulkanCommandPoolEngine->recordCommandBuffer(pCore->pVulkanCommandPoolEngine->pCommandBuffers[currentFrame], imageIndex);
@@ -79,7 +88,15 @@ void VulkanSemaphoresEngine::drawFrame() {
 
     presentInfo.pImageIndices = &imageIndex;
 
-    vkQueuePresentKHR(*(pCore->pVulkanDeviceEngine->pPresentQueue), &presentInfo);
+    result = vkQueuePresentKHR(*(pCore->pVulkanDeviceEngine->pPresentQueue), &presentInfo);
+        
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || pCore->pWindowEngine->framebufferResized) {
+        pCore->pWindowEngine->framebufferResized = false;
+        pCore->pVulkanSwapChainEngine->recreateSwapChain();
+    }
+    else if (result != VK_SUCCESS) {
+        throw std::runtime_error("failed to present swap chain image!");
+    }
 
     currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }

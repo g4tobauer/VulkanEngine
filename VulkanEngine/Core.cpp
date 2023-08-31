@@ -95,13 +95,11 @@ void Core::mainLoop()
 
 void Core::cleanup()
 {
-	pVulkanSemaphoresEngine->destroySyncObjects();
-	pVulkanCommandPoolEngine->destroyCommandPool();
-	pVulkanSwapChainEngine->destroyFramebuffers();
+	pVulkanSwapChainEngine->cleanupSwapChain();
 	pVulkanGraphicPipelineEngine->destroyGraphicsPipeline();
 	pVulkanSwapChainEngine->destroyRenderPass();
-	pVulkanSwapChainEngine->destroyImageViews();
-	pVulkanSwapChainEngine->destroySwapChain();
+	pVulkanSemaphoresEngine->destroySyncObjects();
+	pVulkanCommandPoolEngine->destroyCommandPool();
 	pVulkanDeviceEngine->destroyDevice();
 	pVulkanDebugCallbackEngine->destroyDebugCallback();
 	pWindowEngine->destroySurface();
