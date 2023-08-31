@@ -24,6 +24,9 @@ public:
 
     void createFramebuffers();
     void destroyFramebuffers();
+
+    void createImageViews();
+    void destroyImageViews();
 private:
 
     VkSwapchainKHR swapChain;
@@ -34,7 +37,6 @@ private:
     std::vector<VkImage> swapChainImages;
     std::vector<VkImageView> swapChainImageViews;
 
-    void createImageViews();
     VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
     VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);

@@ -78,14 +78,9 @@ void VulkanSwapChainEngine::createSwapChain()
 
     swapChainExtent = extent;
     pSwapChainExtent = &swapChainExtent;
-
-    createImageViews();
 }
 void VulkanSwapChainEngine::destroySwapChain()
 {
-    for (auto imageView : swapChainImageViews) {
-        vkDestroyImageView(*(pCore->pVulkanDeviceEngine->pDevice), imageView, nullptr);
-    }
 	vkDestroySwapchainKHR(*(pCore->pVulkanDeviceEngine->pDevice), swapChain, nullptr);
 }
 
@@ -157,23 +152,18 @@ void VulkanSwapChainEngine::createFramebuffers() {
         if (vkCreateFramebuffer(*(pCore->pVulkanDeviceEngine->pDevice), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
             throw std::runtime_error("failed to create framebuffer!");
         }
-
-        pSwapChainFramebuffers = swapChainFramebuffers;
     }
+    pSwapChainFramebuffers = swapChainFramebuffers;
 }
 void VulkanSwapChainEngine::destroyFramebuffers() {
     for (auto framebuffer : swapChainFramebuffers) {
         vkDestroyFramebuffer(*(pCore->pVulkanDeviceEngine->pDevice), framebuffer, nullptr);
     }
 }
-#pragma endregion
-
-#pragma region Private
 
 void VulkanSwapChainEngine::createImageViews()
 {
     swapChainImageViews.resize(swapChainImages.size());
-
     for (size_t i = 0; i < swapChainImages.size(); i++) {
         VkImageViewCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -195,6 +185,15 @@ void VulkanSwapChainEngine::createImageViews()
         }
     }
 }
+void VulkanSwapChainEngine::destroyImageViews()
+{
+    for (auto imageView : swapChainImageViews) {
+        vkDestroyImageView(*(pCore->pVulkanDeviceEngine->pDevice), imageView, nullptr);
+    }
+}
+#pragma endregion
+
+#pragma region Private
 VkSurfaceFormatKHR VulkanSwapChainEngine::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
     for (const auto& availableFormat : availableFormats) {
         if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {

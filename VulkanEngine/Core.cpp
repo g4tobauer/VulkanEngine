@@ -75,6 +75,7 @@ void Core::initVulkan()
 	pVulkanDeviceEngine->pickPhysicalDevice();
 	pVulkanDeviceEngine->createLogicalDevice();
 	pVulkanSwapChainEngine->createSwapChain();
+	pVulkanSwapChainEngine->createImageViews();
 	pVulkanSwapChainEngine->createRenderPass();
 	pVulkanGraphicPipelineEngine->createGraphicsPipeline();
 	pVulkanSwapChainEngine->createFramebuffers();
@@ -99,6 +100,7 @@ void Core::cleanup()
 	pVulkanSwapChainEngine->destroyFramebuffers();
 	pVulkanGraphicPipelineEngine->destroyGraphicsPipeline();
 	pVulkanSwapChainEngine->destroyRenderPass();
+	pVulkanSwapChainEngine->destroyImageViews();
 	pVulkanSwapChainEngine->destroySwapChain();
 	pVulkanDeviceEngine->destroyDevice();
 	pVulkanDebugCallbackEngine->destroyDebugCallback();
