@@ -11,7 +11,6 @@ VulkanCommandPoolEngine::VulkanCommandPoolEngine(Core* core)
 VulkanCommandPoolEngine::~VulkanCommandPoolEngine()
 {
 	pCore = NULL;
-    pCommandBuffer = NULL;
 }
 
 void VulkanCommandPoolEngine::createCommandPool()
@@ -29,18 +28,20 @@ void VulkanCommandPoolEngine::destroyCommandPool()
 {
 	vkDestroyCommandPool(*(pCore->pVulkanDeviceEngine->pDevice), commandPool, nullptr);
 }
-void VulkanCommandPoolEngine::createCommandBuffer()
+void VulkanCommandPoolEngine::createCommandBuffers()
 {
+    commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = commandPool;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = 1;
+    allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
 
-    if (vkAllocateCommandBuffers(*(pCore->pVulkanDeviceEngine->pDevice), &allocInfo, &commandBuffer) != VK_SUCCESS) {
+    if (vkAllocateCommandBuffers(*(pCore->pVulkanDeviceEngine->pDevice), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate command buffers!");
     }
-    pCommandBuffer = &commandBuffer;
+    pCommandBuffers = commandBuffers;
 }
 
 void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {

@@ -80,7 +80,7 @@ void Core::initVulkan()
 	pVulkanGraphicPipelineEngine->createGraphicsPipeline();
 	pVulkanSwapChainEngine->createFramebuffers();
 	pVulkanCommandPoolEngine->createCommandPool();
-	pVulkanCommandPoolEngine->createCommandBuffer();
+	pVulkanCommandPoolEngine->createCommandBuffers();
 	pVulkanSemaphoresEngine->createSyncObjects();
 }
 

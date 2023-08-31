@@ -15,8 +15,9 @@ public:
 
 	void drawFrame();
 private:
-	VkSemaphore imageAvailableSemaphore;
-	VkSemaphore renderFinishedSemaphore;
-	VkFence inFlightFence;
+	uint32_t currentFrame = 0;
+	std::vector<VkSemaphore> imageAvailableSemaphores;
+	std::vector<VkSemaphore> renderFinishedSemaphores;
+	std::vector<VkFence> inFlightFences;
 };
 #endif // !ENGINE_VULKAN_SEMAPHORES
