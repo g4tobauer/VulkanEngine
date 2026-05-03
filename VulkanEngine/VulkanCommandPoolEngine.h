@@ -14,6 +14,8 @@ public:
 	void destroyCommandPool();
 
 	void createCommandBuffers();
+	VkCommandBuffer beginSingleTimeCommands();
+	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 	
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, uint32_t frameIndex);
 	const std::vector<VkCommandBuffer>& commandBuffersView() const;

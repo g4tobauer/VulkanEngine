@@ -98,10 +98,11 @@ void VulkanGraphicPipelineEngine::createGraphicsPipeline()
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     descriptorSetLayouts[0] = pCore->camera().descriptorSetLayoutHandle();
-    pipelineLayoutInfo.setLayoutCount = 1;
+    descriptorSetLayouts[1] = pCore->assets().textureDescriptorSetLayoutHandle();
+    pipelineLayoutInfo.setLayoutCount = 2;
     pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts;
     VkPushConstantRange pushConstantRange{};
-    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
     pushConstantRange.offset = 0;
     pushConstantRange.size = sizeof(MeshPushConstants);
     pipelineLayoutInfo.pushConstantRangeCount = 1;

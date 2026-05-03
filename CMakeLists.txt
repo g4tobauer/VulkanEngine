@@ -50,6 +50,7 @@ FetchContent_MakeAvailable(glfw volk glslang)
 
 add_executable(VulkanEngineApp
   VulkanEngine/Application.cpp
+  VulkanEngine/AssetManager.cpp
   VulkanEngine/Core.cpp
   VulkanEngine/CameraEngine.cpp
   VulkanEngine/FileStreamEngine.cpp
@@ -57,6 +58,7 @@ add_executable(VulkanEngineApp
   VulkanEngine/main.cpp
   VulkanEngine/Renderer.cpp
   VulkanEngine/SceneEngine.cpp
+  VulkanEngine/SceneObject.h
   VulkanEngine/VulkanCommandPoolEngine.cpp
   VulkanEngine/VulkanBuffer.cpp
   VulkanEngine/VulkanContext.cpp

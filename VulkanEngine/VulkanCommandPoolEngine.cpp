@@ -44,6 +44,53 @@ void VulkanCommandPoolEngine::createCommandBuffers()
     pCommandBuffers = commandBuffers;
 }
 
+VkCommandBuffer VulkanCommandPoolEngine::beginSingleTimeCommands()
+{
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandPool = commandPool;
+    allocInfo.commandBufferCount = 1;
+
+    VkCommandBuffer commandBuffer = VK_NULL_HANDLE;
+    if (vkAllocateCommandBuffers(pCore->device().deviceHandle(), &allocInfo, &commandBuffer) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to allocate single-time command buffer!");
+    }
+
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+    if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to begin single-time command buffer!");
+    }
+
+    return commandBuffer;
+}
+
+void VulkanCommandPoolEngine::endSingleTimeCommands(VkCommandBuffer commandBuffer)
+{
+    if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to end single-time command buffer!");
+    }
+
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    if (vkQueueSubmit(pCore->device().graphicsQueueHandle(), 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to submit single-time command buffer!");
+    }
+
+    vkQueueWaitIdle(pCore->device().graphicsQueueHandle());
+    vkFreeCommandBuffers(pCore->device().deviceHandle(), commandPool, 1, &commandBuffer);
+}
+
 void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, uint32_t frameIndex) {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -91,24 +138,44 @@ void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer,
     scissor.extent = pCore->swapChain().swapChainExtentValue();
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    for (size_t meshIndex = 0; meshIndex < pCore->geometry().meshCount(); ++meshIndex)
+    const std::vector<SceneObject>& renderObjects = pCore->scene().renderObjects();
+    for (size_t objectIndex = 0; objectIndex < renderObjects.size(); ++objectIndex)
     {
-        VkBuffer vertexBuffers[] = { pCore->geometry().vertexBufferHandle(meshIndex) };
+        const SceneObject& object = renderObjects[objectIndex];
+        const MeshAssetId meshAssetId = object.meshRenderer.meshAssetId;
+        const Material* material = pCore->assets().findMaterialAsset(object.meshRenderer.materialAssetId);
+        if (material == nullptr)
+        {
+            throw std::runtime_error("scene object referenced an invalid material asset!");
+        }
+        const VkDescriptorSet materialDescriptorSet = pCore->assets().materialDescriptorSet(object.meshRenderer.materialAssetId);
+
+        VkBuffer vertexBuffers[] = { pCore->geometry().vertexBufferHandle(meshAssetId) };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-        vkCmdBindIndexBuffer(commandBuffer, pCore->geometry().indexBufferHandle(meshIndex), 0, VK_INDEX_TYPE_UINT32);
+        vkCmdBindIndexBuffer(commandBuffer, pCore->geometry().indexBufferHandle(meshAssetId), 0, VK_INDEX_TYPE_UINT32);
+        vkCmdBindDescriptorSets(
+            commandBuffer,
+            VK_PIPELINE_BIND_POINT_GRAPHICS,
+            pCore->graphicPipeline().pipelineLayoutHandle(),
+            1,
+            1,
+            &materialDescriptorSet,
+            0,
+            nullptr);
 
         MeshPushConstants pushConstants{};
-        pushConstants.model = pCore->scene().modelMatrixForMesh(meshIndex);
+        pushConstants.model = pCore->scene().modelMatrixForObject(objectIndex);
+        memcpy(pushConstants.baseColor, material->baseColor, sizeof(pushConstants.baseColor));
         vkCmdPushConstants(
             commandBuffer,
             pCore->graphicPipeline().pipelineLayoutHandle(),
-            VK_SHADER_STAGE_VERTEX_BIT,
+            VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
             0,
             sizeof(MeshPushConstants),
             &pushConstants);
 
-        vkCmdDrawIndexed(commandBuffer, pCore->geometry().indexCount(meshIndex), 1, 0, 0, 0);
+        vkCmdDrawIndexed(commandBuffer, pCore->geometry().indexCount(meshAssetId), 1, 0, 0, 0);
     }
 
     vkCmdEndRenderPass(commandBuffer);

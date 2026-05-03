@@ -8,6 +8,7 @@ Core::Core()
 	  vulkanDeviceEngine_(std::make_unique<VulkanDeviceEngine>(this)),
 	  vulkanSwapChainEngine_(std::make_unique<VulkanSwapChainEngine>(this)),
 	  vulkanGraphicPipelineEngine_(std::make_unique<VulkanGraphicPipelineEngine>(this)),
+	  assetManager_(std::make_unique<AssetManager>(this)),
 	  geometryEngine_(std::make_unique<GeometryEngine>(this)),
 	  sceneEngine_(std::make_unique<SceneEngine>(this)),
 	  cameraEngine_(std::make_unique<CameraEngine>(this)),
@@ -79,6 +80,11 @@ VulkanSwapChainEngine& Core::swapChain() const
 VulkanGraphicPipelineEngine& Core::graphicPipeline() const
 {
 	return *vulkanGraphicPipelineEngine_;
+}
+
+AssetManager& Core::assets() const
+{
+	return *assetManager_;
 }
 
 GeometryEngine& Core::geometry() const

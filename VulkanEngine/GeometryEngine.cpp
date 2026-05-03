@@ -1,5 +1,6 @@
 #include "GeometryEngine.h"
 #include "Core.h"
+#include "SceneEngine.h"
 
 GeometryEngine::GeometryEngine(Core* core)
 {
@@ -14,22 +15,28 @@ GeometryEngine::~GeometryEngine()
 void GeometryEngine::createTriangleGeometry()
 {
     destroyGeometry();
-    createMesh(Mesh::createColoredTriangle());
+    createMesh(1, Mesh::createColoredTriangle());
 }
 
 void GeometryEngine::createMeshGeometry(const Mesh& mesh)
 {
     destroyGeometry();
-    createMesh(mesh);
+    createMesh(1, mesh);
 }
 
-void GeometryEngine::createSceneGeometry(const std::vector<Mesh>& meshes)
+void GeometryEngine::createSceneGeometry(const SceneEngine& scene)
 {
     destroyGeometry();
 
-    for (const Mesh& mesh : meshes)
+    for (MeshAssetId assetId : scene.referencedMeshAssetIds())
     {
-        createMesh(mesh);
+        const Mesh* mesh = pCore->assets().findMeshAsset(assetId);
+        if (mesh == nullptr)
+        {
+            throw std::runtime_error("scene referenced an invalid mesh asset!");
+        }
+
+        createMesh(assetId, *mesh);
     }
 }
 
@@ -49,24 +56,25 @@ size_t GeometryEngine::meshCount() const
     return geometryResources_.size();
 }
 
-VkBuffer GeometryEngine::vertexBufferHandle(size_t meshIndex) const
+VkBuffer GeometryEngine::vertexBufferHandle(MeshAssetId meshAssetId) const
 {
-    return geometryResources_.at(meshIndex).vertexBuffer.handle();
+    return geometryForAsset(meshAssetId).vertexBuffer.handle();
 }
 
-VkBuffer GeometryEngine::indexBufferHandle(size_t meshIndex) const
+VkBuffer GeometryEngine::indexBufferHandle(MeshAssetId meshAssetId) const
 {
-    return geometryResources_.at(meshIndex).indexBuffer.handle();
+    return geometryForAsset(meshAssetId).indexBuffer.handle();
 }
 
-uint32_t GeometryEngine::indexCount(size_t meshIndex) const
+uint32_t GeometryEngine::indexCount(MeshAssetId meshAssetId) const
 {
-    return geometryResources_.at(meshIndex).indexCount;
+    return geometryForAsset(meshAssetId).indexCount;
 }
 
-void GeometryEngine::createMesh(const Mesh& sourceMesh)
+void GeometryEngine::createMesh(MeshAssetId meshAssetId, const Mesh& sourceMesh)
 {
     GeometryResource resource{};
+    resource.meshAssetId = meshAssetId;
     resource.indexCount = static_cast<uint32_t>(sourceMesh.indices.size());
 
     const VkDeviceSize vertexBufferSize = sizeof(Vertex) * sourceMesh.vertices.size();
@@ -90,4 +98,17 @@ void GeometryEngine::createMesh(const Mesh& sourceMesh)
     resource.indexBuffer.unmap(*pCore);
 
     geometryResources_.push_back(std::move(resource));
+}
+
+const GeometryEngine::GeometryResource& GeometryEngine::geometryForAsset(MeshAssetId meshAssetId) const
+{
+    for (const GeometryResource& resource : geometryResources_)
+    {
+        if (resource.meshAssetId == meshAssetId)
+        {
+            return resource;
+        }
+    }
+
+    throw std::runtime_error("geometry asset was not uploaded to GPU!");
 }

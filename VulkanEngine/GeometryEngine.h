@@ -3,8 +3,10 @@
 #define ENGINE_GEOMETRY
 
 #include "BaseEngine.h"
-#include "Mesh.h"
+#include "SceneObject.h"
 #include "VulkanBuffer.h"
+
+class SceneEngine;
 
 class GeometryEngine : BaseEngine
 {
@@ -14,24 +16,26 @@ public:
 
     void createTriangleGeometry();
     void createMeshGeometry(const Mesh& mesh);
-    void createSceneGeometry(const std::vector<Mesh>& meshes);
+    void createSceneGeometry(const SceneEngine& scene);
     void destroyGeometry();
 
     size_t meshCount() const;
-    VkBuffer vertexBufferHandle(size_t meshIndex) const;
-    VkBuffer indexBufferHandle(size_t meshIndex) const;
-    uint32_t indexCount(size_t meshIndex) const;
+    VkBuffer vertexBufferHandle(MeshAssetId meshAssetId) const;
+    VkBuffer indexBufferHandle(MeshAssetId meshAssetId) const;
+    uint32_t indexCount(MeshAssetId meshAssetId) const;
 
 private:
     struct GeometryResource
     {
+        MeshAssetId meshAssetId = 0;
         VulkanBuffer vertexBuffer;
         VulkanBuffer indexBuffer;
         uint32_t indexCount = 0;
     };
 
     std::vector<GeometryResource> geometryResources_;
-    void createMesh(const Mesh& sourceMesh);
+    void createMesh(MeshAssetId meshAssetId, const Mesh& sourceMesh);
+    const GeometryResource& geometryForAsset(MeshAssetId meshAssetId) const;
 };
 
 #endif // !ENGINE_GEOMETRY

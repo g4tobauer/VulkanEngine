@@ -13,6 +13,7 @@
 #include "VulkanDeviceEngine.h"
 #include "VulkanSwapChainEngine.h"
 #include "VulkanGraphicPipelineEngine.h"
+#include "AssetManager.h"
 #include "GeometryEngine.h"
 #include "SceneEngine.h"
 #include "CameraEngine.h"
@@ -54,6 +55,7 @@ public:
 	VulkanDeviceEngine& device() const;
 	VulkanSwapChainEngine& swapChain() const;
 	VulkanGraphicPipelineEngine& graphicPipeline() const;
+	AssetManager& assets() const;
 	GeometryEngine& geometry() const;
 	SceneEngine& scene() const;
 	CameraEngine& camera() const;
@@ -71,6 +73,7 @@ private:
 	std::unique_ptr<VulkanDeviceEngine> vulkanDeviceEngine_;
 	std::unique_ptr<VulkanSwapChainEngine> vulkanSwapChainEngine_;
 	std::unique_ptr<VulkanGraphicPipelineEngine> vulkanGraphicPipelineEngine_;
+	std::unique_ptr<AssetManager> assetManager_;
 	std::unique_ptr<GeometryEngine> geometryEngine_;
 	std::unique_ptr<SceneEngine> sceneEngine_;
 	std::unique_ptr<CameraEngine> cameraEngine_;

@@ -16,7 +16,7 @@ public:
 	VkPipelineLayout pipelineLayoutHandle() const;
 private:
 	VkPipeline *pGraphicsPipeline;
-	VkDescriptorSetLayout descriptorSetLayouts[1];
+	VkDescriptorSetLayout descriptorSetLayouts[2];
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	

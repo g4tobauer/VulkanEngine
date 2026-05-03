@@ -46,11 +46,6 @@ void CameraEngine::shutdown()
 
 void CameraEngine::updateUniformBuffer(uint32_t currentFrame)
 {
-    static const auto startTime = std::chrono::high_resolution_clock::now();
-    const auto currentTime = std::chrono::high_resolution_clock::now();
-    (void)currentTime;
-    (void)startTime;
-
     UniformBufferObject ubo{};
     ubo.view = Mat4::identity();
     ubo.projection = Mat4::orthographic(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);

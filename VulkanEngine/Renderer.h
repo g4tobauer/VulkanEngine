@@ -16,6 +16,8 @@ public:
 
 private:
 	Core& core_;
+
+	void syncSceneGeometry();
 };
 
 #endif // !ENGINE_RENDERER

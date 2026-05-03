@@ -23,9 +23,27 @@ void Application::initWindow()
 void Application::mainLoop()
 {
 	renderer_.initialize();
+	auto& scene = core_.scene();
+	EntityId rightTriangleId = 0;
+
+	if (scene.renderObjects().size() > 1)
+	{
+		rightTriangleId = scene.renderObjects()[1].id;
+	}
 
 	while (core_.window().isOpen())
 	{
+		if (rightTriangleId != 0)
+		{
+			SceneObject* object = scene.findObject(rightTriangleId);
+			if (object != nullptr)
+			{
+				Transform updatedTransform = object->transform;
+				updatedTransform.rotationRadians += 0.01f;
+				scene.updateTransform(rightTriangleId, updatedTransform);
+			}
+		}
+
 		renderer_.drawFrame();
 	}
 

@@ -71,15 +71,23 @@ Hoje o projeto ja:
 - primeira abstracao reutilizavel de `VulkanBuffer` aplicada em geometria e camera
 - primeira `Scene` minima integrada ao renderer
 - renderer preparado para iterar sobre multiplos meshes da cena
+- primeiro `SceneObject` explicito separando transform e mesh renderizado
+- `EntityId` e API inicial de criacao/remocao de objetos na cena
+- cena com estado `dirty` e resincronizacao de geometria no renderer
+- transformacoes atualizadas sem recriar buffers de geometria
+- multiplas entidades compartilhando a mesma geometria por `MeshAssetId`
+- materiais basicos por `MaterialAssetId`
+- base inicial de `TextureAssetId` e UV preparada para texturas futuras
+- primeiro caminho real de textura Vulkan com `VkImage`, `VkImageView`, `VkSampler` e `combined image sampler`
 
 ### Fase atual em andamento
 
-Estamos consolidando a `Fase 1 - Fundacao da Arquitetura`, com foco em:
+Estamos consolidando a `Fase 3 - Cena e Gameplay Foundation`, com foco em:
 
-- reduzir exposicao de estado interno dos modulos Vulkan
-- trocar acesso por ponteiros publicos por getters controlados
-- preparar a base para wrappers RAII de recursos Vulkan
-- manter o triangulo funcionando a cada passo
+- fortalecer a separacao entre cena, assets e recursos Vulkan
+- permitir materiais e texturas por objeto
+- preparar o renderer para recursos visuais mais completos
+- manter algo renderizando a cada passo
 
 ### Marco de fase
 
@@ -424,11 +432,19 @@ Coisas que devemos perseguir desde cedo:
 - [~] criar `Camera`, `Transform`, `Scene`
 - [~] mover objeto renderizado para uma `Scene` minima
 - [~] iterar multiplos meshes da cena no renderer
+- [~] introduzir `SceneObject` e `MeshRendererComponent`
+- [~] introduzir `EntityId` e API de gerenciamento da cena
+- [~] adicionar `dirty state` e atualizacao de transform por `EntityId`
+- [~] separar mudancas de geometria de mudancas de transform
+- [~] compartilhar geometria entre entidades por asset de malha
+- [~] introduzir material basico por asset
+- [~] preparar assets de textura e UVs
 - renderizar uma mesh com camera controlavel
 
 ### Sprint 4
 
-- texturas, materiais e asset manager inicial
+- [~] texturas, materiais e asset manager inicial
+- [~] primeiro sampler de textura real no shader
 
 ## Como Vamos Trabalhar
 
