@@ -1,0 +1,35 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "vs2022-x64",
+      "displayName": "Visual Studio 2022 x64",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/vs2022-x64"
+    },
+    {
+      "name": "ninja-multi",
+      "displayName": "Ninja Multi-Config",
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/ninja-multi"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "build-debug",
+      "configurePreset": "vs2022-x64",
+      "configuration": "Debug"
+    },
+    {
+      "name": "build-release",
+      "configurePreset": "vs2022-x64",
+      "configuration": "Release"
+    }
+  ]
+}

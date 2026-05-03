@@ -25,6 +25,8 @@ private:
 	VkSurfaceKHR surface;
 
 	static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+		(void)width;
+		(void)height;
 		WindowEngine* app = reinterpret_cast<WindowEngine*>(glfwGetWindowUserPointer(window));
 		app->framebufferResized = true;
 	}

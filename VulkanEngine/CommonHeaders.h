@@ -2,7 +2,8 @@
 #ifndef ENGINE_COMMON_HEADERS
 #define ENGINE_COMMON_HEADERS
 
-#define GLFW_INCLUDE_VULKAN
+#define GLFW_INCLUDE_NONE
+#include <volk.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>

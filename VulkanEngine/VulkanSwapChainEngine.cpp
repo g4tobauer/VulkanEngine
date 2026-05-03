@@ -90,10 +90,14 @@ void VulkanSwapChainEngine::recreateSwapChain() {
 
     vkDeviceWaitIdle(*(pCore->pVulkanDeviceEngine->pDevice));
 
+    pCore->pVulkanGraphicPipelineEngine->destroyGraphicsPipeline();
+    destroyRenderPass();
     cleanupSwapChain();
 
     createSwapChain();
     createImageViews();
+    createRenderPass();
+    pCore->pVulkanGraphicPipelineEngine->createGraphicsPipeline();
     createFramebuffers();
 }
 
@@ -108,6 +112,10 @@ void VulkanSwapChainEngine::cleanupSwapChain() {
     }
 
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
+
+    swapChainFramebuffers.clear();
+    swapChainImageViews.clear();
+    swapChainImages.clear();
 }
 
 void VulkanSwapChainEngine::createRenderPass()

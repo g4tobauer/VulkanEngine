@@ -109,6 +109,7 @@ SwapChainSupportDetails VulkanDeviceEngine::querySwapChainSupport()
 
 void VulkanDeviceEngine::setupQueueCreateInfo()
 {
+	queueCreateInfos.clear();
 	std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
 	for (uint32_t queueFamily : uniqueQueueFamilies) {
@@ -146,20 +147,26 @@ void VulkanDeviceEngine::setupDeviceCreateInfo()
 
 bool VulkanDeviceEngine::isDeviceSuitable(VkPhysicalDevice device) 
 {
-	/*
-	VkPhysicalDeviceProperties deviceProperties;
-	vkGetPhysicalDeviceProperties(device, &deviceProperties);
-
-	VkPhysicalDeviceFeatures deviceFeatures;
-	vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
-	*/
-
 	findQueueFamilies(device);
-	return indices.isComplete();
+
+	bool extensionsSupported = checkDeviceExtensionSupport(device);
+	bool swapChainAdequate = false;
+
+	if (extensionsSupported)
+	{
+		VkPhysicalDevice previousPhysicalDevice = physicalDevice;
+		physicalDevice = device;
+		SwapChainSupportDetails swapChainSupport = querySwapChainSupport();
+		swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+		physicalDevice = previousPhysicalDevice;
+	}
+
+	return indices.isComplete() && extensionsSupported && swapChainAdequate;
 }
 
 void VulkanDeviceEngine::findQueueFamilies(VkPhysicalDevice device)
 {
+	indices = {};
 	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, NULL);
 	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
@@ -184,6 +191,24 @@ void VulkanDeviceEngine::findQueueFamilies(VkPhysicalDevice device)
 		i++;
 	}
 	pIndices = &indices;
+}
+
+bool VulkanDeviceEngine::checkDeviceExtensionSupport(VkPhysicalDevice device)
+{
+	uint32_t extensionCount = 0;
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+	std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+	std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+	for (const auto& extension : availableExtensions)
+	{
+		requiredExtensions.erase(extension.extensionName);
+	}
+
+	return requiredExtensions.empty();
 }
 
 #pragma endregion

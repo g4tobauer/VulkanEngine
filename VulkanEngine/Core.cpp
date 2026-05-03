@@ -66,14 +66,24 @@ void Core::initWindow()
 
 void Core::initVulkan()
 {
-	if (enableValidationLayers && !checkValidationLayerSupport()) 
+	if (volkInitialize() != VK_SUCCESS)
 	{
-		throw std::runtime_error("validation layers requested, but not available!");
+		throw std::runtime_error("failed to initialize volk!");
+	}
+
+	if constexpr (enableValidationLayers)
+	{
+		if (!checkValidationLayerSupport())
+		{
+			throw std::runtime_error("validation layers requested, but not available!");
+		}
 	}
 	pVulkanInstanceEngine->createInstance();
+	volkLoadInstance(*pVulkanInstanceEngine->pInstance);
 	pWindowEngine->createSurface();
 	pVulkanDeviceEngine->pickPhysicalDevice();
 	pVulkanDeviceEngine->createLogicalDevice();
+	volkLoadDevice(*pVulkanDeviceEngine->pDevice);
 	pVulkanSwapChainEngine->createSwapChain();
 	pVulkanSwapChainEngine->createImageViews();
 	pVulkanSwapChainEngine->createRenderPass();

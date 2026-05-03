@@ -16,9 +16,16 @@ WindowEngine::~WindowEngine()
 
 void WindowEngine::createWindow()
 {
-	glfwInit();
+	if (glfwInit() != GLFW_TRUE)
+	{
+		throw std::runtime_error("failed to initialize GLFW!");
+	}
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	pWindow = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", NULL, NULL);
+	if (pWindow == NULL)
+	{
+		throw std::runtime_error("failed to create GLFW window!");
+	}
 	glfwSetWindowUserPointer(pWindow, this);
 	glfwSetFramebufferSizeCallback(pWindow, framebufferResizeCallback);
 }

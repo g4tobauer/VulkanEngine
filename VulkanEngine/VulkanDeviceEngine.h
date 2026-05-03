@@ -36,5 +36,6 @@ private:
 	void setupDeviceCreateInfo();
 	void findQueueFamilies(VkPhysicalDevice device);
 	bool isDeviceSuitable(VkPhysicalDevice device);
+	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 };
 #endif // !ENGINE_VULKAN_DEVICE
