@@ -44,7 +44,7 @@ void VulkanCommandPoolEngine::createCommandBuffers()
     pCommandBuffers = commandBuffers;
 }
 
-void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, uint32_t frameIndex) {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -66,7 +66,16 @@ void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer,
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pCore->graphicPipeline().graphicsPipelineHandle());
-
+    VkDescriptorSet frameDescriptorSet = pCore->camera().descriptorSetForFrame(frameIndex);
+    vkCmdBindDescriptorSets(
+        commandBuffer,
+        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        pCore->graphicPipeline().pipelineLayoutHandle(),
+        0,
+        1,
+        &frameDescriptorSet,
+        0,
+        nullptr);
 
     VkViewport viewport{};
     viewport.x = 0.0f;
@@ -82,7 +91,25 @@ void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer,
     scissor.extent = pCore->swapChain().swapChainExtentValue();
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+    for (size_t meshIndex = 0; meshIndex < pCore->geometry().meshCount(); ++meshIndex)
+    {
+        VkBuffer vertexBuffers[] = { pCore->geometry().vertexBufferHandle(meshIndex) };
+        VkDeviceSize offsets[] = { 0 };
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+        vkCmdBindIndexBuffer(commandBuffer, pCore->geometry().indexBufferHandle(meshIndex), 0, VK_INDEX_TYPE_UINT32);
+
+        MeshPushConstants pushConstants{};
+        pushConstants.model = pCore->scene().modelMatrixForMesh(meshIndex);
+        vkCmdPushConstants(
+            commandBuffer,
+            pCore->graphicPipeline().pipelineLayoutHandle(),
+            VK_SHADER_STAGE_VERTEX_BIT,
+            0,
+            sizeof(MeshPushConstants),
+            &pushConstants);
+
+        vkCmdDrawIndexed(commandBuffer, pCore->geometry().indexCount(meshIndex), 1, 0, 0, 0);
+    }
 
     vkCmdEndRenderPass(commandBuffer);
 

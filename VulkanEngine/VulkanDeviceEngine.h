@@ -19,6 +19,7 @@ public:
 	VkQueue graphicsQueueHandle() const;
 	VkQueue presentQueueHandle() const;
 	const QueueFamilyIndices& queueFamilyIndices() const;
+	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
 private:
 	VkPhysicalDevice* pPhysicalDevice;
 	VkDevice* pDevice;

@@ -17,6 +17,9 @@
 #include <cstdint>
 #include <limits>
 #include <fstream>
+#include <array>
+#include <chrono>
+#include <cmath>
 
 #ifndef ENGINE_COMMON_STRUCTS
 #include "CommonStructs.h"

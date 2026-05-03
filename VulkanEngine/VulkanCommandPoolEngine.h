@@ -15,7 +15,7 @@ public:
 
 	void createCommandBuffers();
 	
-	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, uint32_t frameIndex);
 	const std::vector<VkCommandBuffer>& commandBuffersView() const;
 private:
 	std::vector<VkCommandBuffer> pCommandBuffers;

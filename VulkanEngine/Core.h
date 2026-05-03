@@ -13,6 +13,9 @@
 #include "VulkanDeviceEngine.h"
 #include "VulkanSwapChainEngine.h"
 #include "VulkanGraphicPipelineEngine.h"
+#include "GeometryEngine.h"
+#include "SceneEngine.h"
+#include "CameraEngine.h"
 #include "VulkanCommandPoolEngine.h"
 #include "VulkanSemaphoresEngine.h"
 #include <memory>
@@ -51,6 +54,9 @@ public:
 	VulkanDeviceEngine& device() const;
 	VulkanSwapChainEngine& swapChain() const;
 	VulkanGraphicPipelineEngine& graphicPipeline() const;
+	GeometryEngine& geometry() const;
+	SceneEngine& scene() const;
+	CameraEngine& camera() const;
 	VulkanCommandPoolEngine& commandPool() const;
 	VulkanSemaphoresEngine& semaphores() const;
 
@@ -65,6 +71,9 @@ private:
 	std::unique_ptr<VulkanDeviceEngine> vulkanDeviceEngine_;
 	std::unique_ptr<VulkanSwapChainEngine> vulkanSwapChainEngine_;
 	std::unique_ptr<VulkanGraphicPipelineEngine> vulkanGraphicPipelineEngine_;
+	std::unique_ptr<GeometryEngine> geometryEngine_;
+	std::unique_ptr<SceneEngine> sceneEngine_;
+	std::unique_ptr<CameraEngine> cameraEngine_;
 	std::unique_ptr<VulkanCommandPoolEngine> vulkanCommandPoolEngine_;
 	std::unique_ptr<VulkanSemaphoresEngine> vulkanSemaphoresEngine_;
 	std::vector<const char*> engineExtentions_;

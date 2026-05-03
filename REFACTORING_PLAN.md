@@ -64,6 +64,13 @@ Hoje o projeto ja:
 - introducao de `Application`
 - introducao de `Renderer`
 - introducao de `VulkanContext`
+- triangulo migrado de `gl_VertexIndex` para `vertex buffer`
+- compilacao automatica de shaders integrada ao build
+- `UniformBuffer + Camera` inicial integrados ao renderer
+- primeira `Mesh` com `index buffer` e `Transform` integrada ao renderer
+- primeira abstracao reutilizavel de `VulkanBuffer` aplicada em geometria e camera
+- primeira `Scene` minima integrada ao renderer
+- renderer preparado para iterar sobre multiplos meshes da cena
 
 ### Fase atual em andamento
 
@@ -73,6 +80,21 @@ Estamos consolidando a `Fase 1 - Fundacao da Arquitetura`, com foco em:
 - trocar acesso por ponteiros publicos por getters controlados
 - preparar a base para wrappers RAII de recursos Vulkan
 - manter o triangulo funcionando a cada passo
+
+### Marco de fase
+
+- entrada explicita na `Fase 3 - Cena e Gameplay Foundation`
+- motivo: a renderizacao passou a consumir uma `Scene` e a iterar meshes em vez de depender de um unico objeto hardcoded
+
+### Proxima frente iniciada
+
+Ja iniciamos a entrada na `Fase 2 - Base de Renderer Real` com os seguintes objetivos imediatos:
+
+- introduzir uma abstracao de buffer Vulkan
+- sair da dependencia exclusiva de `gl_VertexIndex`
+- preparar a renderizacao de geometria real com `vertex buffer`
+- automatizar a compilacao de shaders no build
+- introduzir `UniformBuffer + Camera`
 
 Limitacoes atuais:
 
@@ -391,12 +413,17 @@ Coisas que devemos perseguir desde cedo:
 
 ### Sprint 2
 
-- criar `Buffer` e `Mesh`
-- sair do triangulo hardcoded para vertex buffer real
+- [~] criar `Buffer` e `Mesh`
+- [x] sair do triangulo hardcoded para vertex buffer real
+- [~] introduzir `UniformBuffer + Camera`
+- [~] introduzir `index buffer` e `Transform`
+- [~] consolidar abstracao de `VulkanBuffer`
 
 ### Sprint 3
 
-- criar `Camera`, `Transform`, `Scene`
+- [~] criar `Camera`, `Transform`, `Scene`
+- [~] mover objeto renderizado para uma `Scene` minima
+- [~] iterar multiplos meshes da cena no renderer
 - renderizar uma mesh com camera controlavel
 
 ### Sprint 4

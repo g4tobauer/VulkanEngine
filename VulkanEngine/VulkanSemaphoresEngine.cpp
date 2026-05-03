@@ -52,9 +52,13 @@ void VulkanSemaphoresEngine::drawFrame() {
     }
 
     vkResetFences(device, 1, &inFlightFences[currentFrame]);
+    pCore->camera().updateUniformBuffer(currentFrame);
 
     vkResetCommandBuffer(pCore->commandPool().commandBuffersView()[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
-    pCore->commandPool().recordCommandBuffer(pCore->commandPool().commandBuffersView()[currentFrame], imageIndex);
+    pCore->commandPool().recordCommandBuffer(
+        pCore->commandPool().commandBuffersView()[currentFrame],
+        imageIndex,
+        currentFrame);
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

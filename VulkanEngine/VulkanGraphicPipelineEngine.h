@@ -13,8 +13,10 @@ public:
 	void createGraphicsPipeline();
 	void destroyGraphicsPipeline();
 	VkPipeline graphicsPipelineHandle() const;
+	VkPipelineLayout pipelineLayoutHandle() const;
 private:
 	VkPipeline *pGraphicsPipeline;
+	VkDescriptorSetLayout descriptorSetLayouts[1];
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	
