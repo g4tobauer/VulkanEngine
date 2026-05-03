@@ -95,7 +95,7 @@ void VulkanGraphicPipelineEngine::createGraphicsPipeline()
     pipelineLayoutInfo.setLayoutCount = 0;
     pipelineLayoutInfo.pushConstantRangeCount = 0;
 
-    if (vkCreatePipelineLayout(*(pCore->device().pDevice), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+    if (vkCreatePipelineLayout(pCore->device().deviceHandle(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
         throw std::runtime_error("failed to create pipeline layout!");
     }
 
@@ -111,22 +111,27 @@ void VulkanGraphicPipelineEngine::createGraphicsPipeline()
     pipelineInfo.pColorBlendState = &colorBlending;
     pipelineInfo.pDynamicState = &dynamicState;
     pipelineInfo.layout = pipelineLayout;
-    pipelineInfo.renderPass = *(pCore->swapChain().pRenderPass);
+    pipelineInfo.renderPass = pCore->swapChain().renderPassHandle();
     pipelineInfo.subpass = 0;
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-    if (vkCreateGraphicsPipelines(*(pCore->device().pDevice), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+    if (vkCreateGraphicsPipelines(pCore->device().deviceHandle(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
         throw std::runtime_error("failed to create graphics pipeline!");
     }
     pGraphicsPipeline = &graphicsPipeline;
     
-    vkDestroyShaderModule(*(pCore->device().pDevice), fragShaderModule, nullptr);
-    vkDestroyShaderModule(*(pCore->device().pDevice), vertShaderModule, nullptr);
+    vkDestroyShaderModule(pCore->device().deviceHandle(), fragShaderModule, nullptr);
+    vkDestroyShaderModule(pCore->device().deviceHandle(), vertShaderModule, nullptr);
 }
 void VulkanGraphicPipelineEngine::destroyGraphicsPipeline()
 {
-    vkDestroyPipeline(*(pCore->device().pDevice), graphicsPipeline, nullptr);
-    vkDestroyPipelineLayout(*(pCore->device().pDevice), pipelineLayout, nullptr);
+    vkDestroyPipeline(pCore->device().deviceHandle(), graphicsPipeline, nullptr);
+    vkDestroyPipelineLayout(pCore->device().deviceHandle(), pipelineLayout, nullptr);
+}
+
+VkPipeline VulkanGraphicPipelineEngine::graphicsPipelineHandle() const
+{
+    return graphicsPipeline;
 }
 
 #pragma endregion
@@ -140,7 +145,7 @@ VkShaderModule VulkanGraphicPipelineEngine::createShaderModule(const std::vector
     createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
     VkShaderModule shaderModule;
-    if (vkCreateShaderModule(*(pCore->device().pDevice), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
+    if (vkCreateShaderModule(pCore->device().deviceHandle(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
         throw std::runtime_error("failed to create shader module!");
     }
 

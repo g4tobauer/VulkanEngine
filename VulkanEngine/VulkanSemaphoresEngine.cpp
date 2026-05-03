@@ -26,7 +26,7 @@ void VulkanSemaphoresEngine::createSyncObjects()
     fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-    VkDevice device = *(pCore->device().pDevice);
+    VkDevice device = pCore->device().deviceHandle();
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
             vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
@@ -37,11 +37,11 @@ void VulkanSemaphoresEngine::createSyncObjects()
 }
 
 void VulkanSemaphoresEngine::drawFrame() {
-    VkDevice device = *(pCore->device().pDevice);
+    VkDevice device = pCore->device().deviceHandle();
     vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
-    VkResult result = vkAcquireNextImageKHR(device, *(pCore->swapChain().pSwapChain), UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+    VkResult result = vkAcquireNextImageKHR(device, pCore->swapChain().swapChainHandle(), UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         pCore->swapChain().recreateSwapChain();
@@ -53,8 +53,8 @@ void VulkanSemaphoresEngine::drawFrame() {
 
     vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
-    vkResetCommandBuffer(pCore->commandPool().pCommandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
-    pCore->commandPool().recordCommandBuffer(pCore->commandPool().pCommandBuffers[currentFrame], imageIndex);
+    vkResetCommandBuffer(pCore->commandPool().commandBuffersView()[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
+    pCore->commandPool().recordCommandBuffer(pCore->commandPool().commandBuffersView()[currentFrame], imageIndex);
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -66,13 +66,13 @@ void VulkanSemaphoresEngine::drawFrame() {
     submitInfo.pWaitDstStageMask = waitStages;
 
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &pCore->commandPool().pCommandBuffers[currentFrame];
+    submitInfo.pCommandBuffers = &pCore->commandPool().commandBuffersView()[currentFrame];
 
     VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    if (vkQueueSubmit(*(pCore->device().pGraphicsQueue), 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
+    if (vkQueueSubmit(pCore->device().graphicsQueueHandle(), 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
         throw std::runtime_error("failed to submit draw command buffer!");
     }
 
@@ -82,16 +82,16 @@ void VulkanSemaphoresEngine::drawFrame() {
     presentInfo.waitSemaphoreCount = 1;
     presentInfo.pWaitSemaphores = signalSemaphores;
     
-    VkSwapchainKHR swapChains[] = { *(pCore->swapChain().pSwapChain) };
+    VkSwapchainKHR swapChains[] = { pCore->swapChain().swapChainHandle() };
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = swapChains;
 
     presentInfo.pImageIndices = &imageIndex;
 
-    result = vkQueuePresentKHR(*(pCore->device().pPresentQueue), &presentInfo);
+    result = vkQueuePresentKHR(pCore->device().presentQueueHandle(), &presentInfo);
         
-    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || pCore->window().framebufferResized) {
-        pCore->window().framebufferResized = false;
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || pCore->window().isFramebufferResized()) {
+        pCore->window().clearFramebufferResized();
         pCore->swapChain().recreateSwapChain();
     }
     else if (result != VK_SUCCESS) {
@@ -103,7 +103,7 @@ void VulkanSemaphoresEngine::drawFrame() {
 
 void VulkanSemaphoresEngine::destroySyncObjects()
 {
-    VkDevice device = *(pCore->device().pDevice);
+    VkDevice device = pCore->device().deviceHandle();
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
         vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);

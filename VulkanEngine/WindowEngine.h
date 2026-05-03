@@ -7,10 +7,6 @@
 class WindowEngine : BaseEngine
 {
 public:
-	bool framebufferResized = false;
-	GLFWwindow* pWindow;
-	VkSurfaceKHR* pSurface;
-
 	WindowEngine(Core* core);
 	~WindowEngine();
 
@@ -20,8 +16,15 @@ public:
 	void putRequiredInstanceExtensions();
 	void destroySurface();
 	void destroyWindow();
+	GLFWwindow* windowHandle() const;
+	VkSurfaceKHR surfaceHandle() const;
+	bool isFramebufferResized() const;
+	void clearFramebufferResized();
 
 private:
+	bool framebufferResized = false;
+	GLFWwindow* pWindow = nullptr;
+	VkSurfaceKHR* pSurface = nullptr;
 	VkSurfaceKHR surface;
 
 	static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {

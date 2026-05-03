@@ -32,7 +32,7 @@ VulkanDeviceEngine::~VulkanDeviceEngine()
 void VulkanDeviceEngine::pickPhysicalDevice()
 {	
 	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(*pCore->instance().pInstance, &deviceCount, NULL);
+	vkEnumeratePhysicalDevices(pCore->instance().instanceHandle(), &deviceCount, NULL);
 
 	if (deviceCount == 0) 
 	{
@@ -40,7 +40,7 @@ void VulkanDeviceEngine::pickPhysicalDevice()
 	}
 
 	std::vector<VkPhysicalDevice> devices(deviceCount);
-	vkEnumeratePhysicalDevices(*pCore->instance().pInstance, &deviceCount, devices.data());
+	vkEnumeratePhysicalDevices(pCore->instance().instanceHandle(), &deviceCount, devices.data());
 
 	for (const auto& device : devices) 
 	{
@@ -77,10 +77,35 @@ void VulkanDeviceEngine::destroyDevice()
 	vkDestroyDevice(device, NULL);
 }
 
+VkPhysicalDevice VulkanDeviceEngine::physicalDeviceHandle() const
+{
+	return physicalDevice;
+}
+
+VkDevice VulkanDeviceEngine::deviceHandle() const
+{
+	return device;
+}
+
+VkQueue VulkanDeviceEngine::graphicsQueueHandle() const
+{
+	return graphicsQueue;
+}
+
+VkQueue VulkanDeviceEngine::presentQueueHandle() const
+{
+	return presentQueue;
+}
+
+const QueueFamilyIndices& VulkanDeviceEngine::queueFamilyIndices() const
+{
+	return indices;
+}
+
 SwapChainSupportDetails VulkanDeviceEngine::querySwapChainSupport()
 {
 	VkPhysicalDevice device = physicalDevice;
-	VkSurfaceKHR surface = *(pCore->window().pSurface);
+	VkSurfaceKHR surface = pCore->window().surfaceHandle();
 	SwapChainSupportDetails details;
 
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
@@ -179,7 +204,7 @@ void VulkanDeviceEngine::findQueueFamilies(VkPhysicalDevice device)
 			indices.graphicsFamily = i;
 		}
 		VkBool32 presentSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, *pCore->window().pSurface, &presentSupport);
+		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, pCore->window().surfaceHandle(), &presentSupport);
 		if (queueFamily.queueCount > 0 && presentSupport)
 		{
 			indices.presentFamily = i;

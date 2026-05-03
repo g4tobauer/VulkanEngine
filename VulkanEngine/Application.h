@@ -4,6 +4,7 @@
 
 #include "Core.h"
 #include "Renderer.h"
+#include "VulkanContext.h"
 
 class Application
 {
@@ -13,10 +14,10 @@ public:
 
 private:
 	Core core_;
+	VulkanContext vulkanContext_;
 	Renderer renderer_;
 
 	void initWindow();
-	void initVulkan();
 	void mainLoop();
 	void cleanup();
 };

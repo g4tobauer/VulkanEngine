@@ -7,12 +7,6 @@
 class VulkanSwapChainEngine : BaseEngine
 {
 public:
-    VkSwapchainKHR* pSwapChain;
-    VkFormat* pSwapChainImageFormat;
-    VkRenderPass* pRenderPass;
-    VkExtent2D* pSwapChainExtent;
-    std::vector<VkFramebuffer> pSwapChainFramebuffers;
-
 	VulkanSwapChainEngine(Core* core);
 	~VulkanSwapChainEngine();
 
@@ -26,7 +20,17 @@ public:
     void createFramebuffers();
 
     void createImageViews();
+    VkSwapchainKHR swapChainHandle() const;
+    VkFormat swapChainImageFormatValue() const;
+    VkRenderPass renderPassHandle() const;
+    const VkExtent2D& swapChainExtentValue() const;
+    const std::vector<VkFramebuffer>& framebuffers() const;
 private:
+    VkSwapchainKHR* pSwapChain;
+    VkFormat* pSwapChainImageFormat;
+    VkRenderPass* pRenderPass;
+    VkExtent2D* pSwapChainExtent;
+    std::vector<VkFramebuffer> pSwapChainFramebuffers;
 
     VkSwapchainKHR swapChain;
     VkFormat swapChainImageFormat;

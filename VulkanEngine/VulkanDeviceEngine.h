@@ -7,13 +7,6 @@
 class VulkanDeviceEngine : BaseEngine
 {
 public:
-	VkPhysicalDevice* pPhysicalDevice;
-	VkDevice* pDevice;
-	VkQueue* pGraphicsQueue;
-	VkQueue* pPresentQueue;
-	QueueFamilyIndices* pIndices;
-
-
 	VulkanDeviceEngine(Core* core);
 	~VulkanDeviceEngine();
 
@@ -21,7 +14,17 @@ public:
 	void createLogicalDevice();
 	void destroyDevice();
 	SwapChainSupportDetails querySwapChainSupport();
+	VkPhysicalDevice physicalDeviceHandle() const;
+	VkDevice deviceHandle() const;
+	VkQueue graphicsQueueHandle() const;
+	VkQueue presentQueueHandle() const;
+	const QueueFamilyIndices& queueFamilyIndices() const;
 private:
+	VkPhysicalDevice* pPhysicalDevice;
+	VkDevice* pDevice;
+	VkQueue* pGraphicsQueue;
+	VkQueue* pPresentQueue;
+	QueueFamilyIndices* pIndices;
 	QueueFamilyIndices indices;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkQueue graphicsQueue;

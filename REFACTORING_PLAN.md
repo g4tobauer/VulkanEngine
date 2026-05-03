@@ -52,6 +52,28 @@ Hoje o projeto ja:
 - desenha um triangulo
 - compila via `CMake`
 
+## Progresso Atual
+
+### Refatoracoes ja concluidas
+
+- build migrado para `CMake`
+- integracao com `glfw`, `volk` e `Vulkan-Headers`
+- triangulo funcionando novamente em `Debug`
+- carga de shaders mais robusta
+- `Core` migrado para ownership com `std::unique_ptr`
+- introducao de `Application`
+- introducao de `Renderer`
+- introducao de `VulkanContext`
+
+### Fase atual em andamento
+
+Estamos consolidando a `Fase 1 - Fundacao da Arquitetura`, com foco em:
+
+- reduzir exposicao de estado interno dos modulos Vulkan
+- trocar acesso por ponteiros publicos por getters controlados
+- preparar a base para wrappers RAII de recursos Vulkan
+- manter o triangulo funcionando a cada passo
+
 Limitacoes atuais:
 
 - acoplamento alto entre modulos via `Core`
@@ -71,14 +93,15 @@ Parar de crescer em cima de uma base fragil.
 
 ### Entregas
 
-- substituir `new/delete` por `std::unique_ptr`
-- reduzir ponteiros publicos em `Core`
-- introduzir classes centrais:
+- [x] substituir `new/delete` por `std::unique_ptr`
+- [x] reduzir ponteiros publicos em `Core`
+- [x] introduzir classes centrais:
   - `Application`
   - `Window`
   - `VulkanContext`
   - `Renderer`
-- mover responsabilidade de inicializacao/destruicao para RAII
+- [~] mover responsabilidade de inicializacao/destruicao para RAII
+- [~] reduzir exposicao de handles Vulkan entre modulos
 - definir convencoes de logs, asserts e tratamento de erro
 - organizar pasta do projeto por dominios
 
@@ -361,9 +384,10 @@ Coisas que devemos perseguir desde cedo:
 
 ### Sprint 1
 
-- refatorar `Core` para `Application`
-- introduzir `VulkanContext`
-- remover ownership manual mais perigoso
+- [x] refatorar `Core` para `Application`
+- [x] introduzir `VulkanContext`
+- [x] remover ownership manual mais perigoso
+- [~] reduzir acoplamento entre modulos Vulkan
 
 ### Sprint 2
 

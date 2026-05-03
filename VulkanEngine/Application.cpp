@@ -2,6 +2,7 @@
 
 Application::Application()
 	: core_(),
+	  vulkanContext_(core_),
 	  renderer_(core_)
 {
 }
@@ -9,7 +10,7 @@ Application::Application()
 void Application::run()
 {
 	initWindow();
-	initVulkan();
+	vulkanContext_.initialize();
 	mainLoop();
 	cleanup();
 }
@@ -19,32 +20,10 @@ void Application::initWindow()
 	core_.window().createWindow();
 }
 
-void Application::initVulkan()
-{
-	if (volkInitialize() != VK_SUCCESS)
-	{
-		throw std::runtime_error("failed to initialize volk!");
-	}
-
-	if constexpr (enableValidationLayers)
-	{
-		if (!core_.checkValidationLayerSupport())
-		{
-			throw std::runtime_error("validation layers requested, but not available!");
-		}
-	}
-
-	core_.instance().createInstance();
-	volkLoadInstance(*core_.instance().pInstance);
-	core_.window().createSurface();
-	core_.device().pickPhysicalDevice();
-	core_.device().createLogicalDevice();
-	volkLoadDevice(*core_.device().pDevice);
-	renderer_.initialize();
-}
-
 void Application::mainLoop()
 {
+	renderer_.initialize();
+
 	while (core_.window().isOpen())
 	{
 		renderer_.drawFrame();
@@ -56,9 +35,6 @@ void Application::mainLoop()
 void Application::cleanup()
 {
 	renderer_.shutdown();
-	core_.device().destroyDevice();
-	core_.debugCallback().destroyDebugCallback();
-	core_.window().destroySurface();
-	core_.instance().destroyInstance();
+	vulkanContext_.shutdown();
 	core_.window().destroyWindow();
 }

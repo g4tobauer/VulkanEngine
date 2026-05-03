@@ -21,7 +21,7 @@ void VulkanDebugCallbackEngine::setupDebugCallback()
 void VulkanDebugCallbackEngine::createDebugCallback()
 {
 	if (!enableValidationLayers) return;
-	if (CreateDebugUtilsMessengerEXT(*pCore->instance().pInstance, &utilsMessengerCreateInfo, NULL, &utilsMessengerCallback) != VK_SUCCESS)
+	if (CreateDebugUtilsMessengerEXT(pCore->instance().instanceHandle(), &utilsMessengerCreateInfo, NULL, &utilsMessengerCallback) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to set up debug callback!");
 	}
@@ -38,7 +38,7 @@ void VulkanDebugCallbackEngine::destroyDebugCallback()
 {
 	if (enableValidationLayers) 
 	{
-		DestroyDebugUtilsMessengerEXT(*pCore->instance().pInstance, utilsMessengerCallback, NULL);
+		DestroyDebugUtilsMessengerEXT(pCore->instance().instanceHandle(), utilsMessengerCallback, NULL);
 	}
 }
 #pragma endregion

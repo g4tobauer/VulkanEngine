@@ -18,15 +18,15 @@ void VulkanCommandPoolEngine::createCommandPool()
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-    poolInfo.queueFamilyIndex = pCore->device().pIndices->graphicsFamily.value();
+    poolInfo.queueFamilyIndex = pCore->device().queueFamilyIndices().graphicsFamily.value();
 
-    if (vkCreateCommandPool(*(pCore->device().pDevice), &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+    if (vkCreateCommandPool(pCore->device().deviceHandle(), &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
         throw std::runtime_error("failed to create command pool!");
     }
 }
 void VulkanCommandPoolEngine::destroyCommandPool()
 {
-	vkDestroyCommandPool(*(pCore->device().pDevice), commandPool, nullptr);
+	vkDestroyCommandPool(pCore->device().deviceHandle(), commandPool, nullptr);
 }
 void VulkanCommandPoolEngine::createCommandBuffers()
 {
@@ -38,7 +38,7 @@ void VulkanCommandPoolEngine::createCommandBuffers()
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
 
-    if (vkAllocateCommandBuffers(*(pCore->device().pDevice), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+    if (vkAllocateCommandBuffers(pCore->device().deviceHandle(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate command buffers!");
     }
     pCommandBuffers = commandBuffers;
@@ -54,10 +54,10 @@ void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer,
 
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassInfo.renderPass = *(pCore->swapChain().pRenderPass);
-    renderPassInfo.framebuffer = pCore->swapChain().pSwapChainFramebuffers[imageIndex];
+    renderPassInfo.renderPass = pCore->swapChain().renderPassHandle();
+    renderPassInfo.framebuffer = pCore->swapChain().framebuffers()[imageIndex];
     renderPassInfo.renderArea.offset = { 0, 0 };
-    renderPassInfo.renderArea.extent = *(pCore->swapChain().pSwapChainExtent);
+    renderPassInfo.renderArea.extent = pCore->swapChain().swapChainExtentValue();
 
     VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
     renderPassInfo.clearValueCount = 1;
@@ -65,21 +65,21 @@ void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer,
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *(pCore->graphicPipeline().pGraphicsPipeline));
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pCore->graphicPipeline().graphicsPipelineHandle());
 
 
     VkViewport viewport{};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
-    viewport.width = (float)(pCore->swapChain().pSwapChainExtent)->width;
-    viewport.height = (float)(pCore->swapChain().pSwapChainExtent)->height;
+    viewport.width = (float)pCore->swapChain().swapChainExtentValue().width;
+    viewport.height = (float)pCore->swapChain().swapChainExtentValue().height;
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
     vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
     VkRect2D scissor{};
     scissor.offset = { 0, 0 };
-    scissor.extent = *(pCore->swapChain().pSwapChainExtent);
+    scissor.extent = pCore->swapChain().swapChainExtentValue();
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
     vkCmdDraw(commandBuffer, 3, 1, 0, 0);
@@ -89,5 +89,10 @@ void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer,
     if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to record command buffer!");
     }
+}
+
+const std::vector<VkCommandBuffer>& VulkanCommandPoolEngine::commandBuffersView() const
+{
+	return commandBuffers;
 }
 #pragma endregion

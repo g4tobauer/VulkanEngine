@@ -36,7 +36,7 @@ void VulkanSwapChainEngine::createSwapChain()
 
     VkSwapchainCreateInfoKHR createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-    createInfo.surface = *(pCore->window().pSurface);
+    createInfo.surface = pCore->window().surfaceHandle();
 
     createInfo.minImageCount = imageCount;
     createInfo.imageFormat = surfaceFormat.format;
@@ -45,7 +45,7 @@ void VulkanSwapChainEngine::createSwapChain()
     createInfo.imageArrayLayers = 1;
     createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-    QueueFamilyIndices indices = *(pCore->device().pIndices);
+    QueueFamilyIndices indices = pCore->device().queueFamilyIndices();
     uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
     if (indices.graphicsFamily != indices.presentFamily) {
@@ -64,14 +64,14 @@ void VulkanSwapChainEngine::createSwapChain()
 
     createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-    if (vkCreateSwapchainKHR(*(pCore->device().pDevice), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
+    if (vkCreateSwapchainKHR(pCore->device().deviceHandle(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
         throw std::runtime_error("failed to create swap chain!");
     }
     pSwapChain = &swapChain;
 
-    vkGetSwapchainImagesKHR(*(pCore->device().pDevice), swapChain, &imageCount, nullptr);
+    vkGetSwapchainImagesKHR(pCore->device().deviceHandle(), swapChain, &imageCount, nullptr);
     swapChainImages.resize(imageCount);
-    vkGetSwapchainImagesKHR(*(pCore->device().pDevice), swapChain, &imageCount, swapChainImages.data());
+    vkGetSwapchainImagesKHR(pCore->device().deviceHandle(), swapChain, &imageCount, swapChainImages.data());
 
     swapChainImageFormat = surfaceFormat.format;
     pSwapChainImageFormat = &swapChainImageFormat;
@@ -82,13 +82,13 @@ void VulkanSwapChainEngine::createSwapChain()
 
 void VulkanSwapChainEngine::recreateSwapChain() {
     int width = 0, height = 0;
-    glfwGetFramebufferSize(pCore->window().pWindow, &width, &height);
+    glfwGetFramebufferSize(pCore->window().windowHandle(), &width, &height);
     while (width == 0 || height == 0) {
-        glfwGetFramebufferSize(pCore->window().pWindow, &width, &height);
+        glfwGetFramebufferSize(pCore->window().windowHandle(), &width, &height);
         glfwWaitEvents();
     }
 
-    vkDeviceWaitIdle(*(pCore->device().pDevice));
+    vkDeviceWaitIdle(pCore->device().deviceHandle());
 
     pCore->graphicPipeline().destroyGraphicsPipeline();
     destroyRenderPass();
@@ -102,7 +102,7 @@ void VulkanSwapChainEngine::recreateSwapChain() {
 }
 
 void VulkanSwapChainEngine::cleanupSwapChain() {
-    VkDevice device = *(pCore->device().pDevice);
+    VkDevice device = pCore->device().deviceHandle();
     for (auto framebuffer : swapChainFramebuffers) {
         vkDestroyFramebuffer(device, framebuffer, nullptr);
     }
@@ -121,7 +121,7 @@ void VulkanSwapChainEngine::cleanupSwapChain() {
 void VulkanSwapChainEngine::createRenderPass()
 {
     VkAttachmentDescription colorAttachment{};
-    colorAttachment.format = *(pCore->swapChain().pSwapChainImageFormat);
+    colorAttachment.format = pCore->swapChain().swapChainImageFormatValue();
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -156,14 +156,14 @@ void VulkanSwapChainEngine::createRenderPass()
     renderPassInfo.dependencyCount = 1;
     renderPassInfo.pDependencies = &dependency;
 
-    if (vkCreateRenderPass(*(pCore->device().pDevice), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
+    if (vkCreateRenderPass(pCore->device().deviceHandle(), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
         throw std::runtime_error("failed to create render pass!");
     }
     pRenderPass = &renderPass;
 }
 void VulkanSwapChainEngine::destroyRenderPass()
 {
-    vkDestroyRenderPass(*(pCore->device().pDevice), renderPass, nullptr);
+    vkDestroyRenderPass(pCore->device().deviceHandle(), renderPass, nullptr);
 }
 
 void VulkanSwapChainEngine::createFramebuffers() {
@@ -183,7 +183,7 @@ void VulkanSwapChainEngine::createFramebuffers() {
         framebufferInfo.height = swapChainExtent.height;
         framebufferInfo.layers = 1;
 
-        if (vkCreateFramebuffer(*(pCore->device().pDevice), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
+        if (vkCreateFramebuffer(pCore->device().deviceHandle(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
             throw std::runtime_error("failed to create framebuffer!");
         }
     }
@@ -209,10 +209,35 @@ void VulkanSwapChainEngine::createImageViews()
         createInfo.subresourceRange.baseArrayLayer = 0;
         createInfo.subresourceRange.layerCount = 1;
 
-        if (vkCreateImageView(*(pCore->device().pDevice), &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
+        if (vkCreateImageView(pCore->device().deviceHandle(), &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
             throw std::runtime_error("failed to create image views!");
         }
     }
+}
+
+VkSwapchainKHR VulkanSwapChainEngine::swapChainHandle() const
+{
+    return swapChain;
+}
+
+VkFormat VulkanSwapChainEngine::swapChainImageFormatValue() const
+{
+    return swapChainImageFormat;
+}
+
+VkRenderPass VulkanSwapChainEngine::renderPassHandle() const
+{
+    return renderPass;
+}
+
+const VkExtent2D& VulkanSwapChainEngine::swapChainExtentValue() const
+{
+    return swapChainExtent;
+}
+
+const std::vector<VkFramebuffer>& VulkanSwapChainEngine::framebuffers() const
+{
+    return swapChainFramebuffers;
 }
 #pragma endregion
 
@@ -241,7 +266,7 @@ VkExtent2D VulkanSwapChainEngine::chooseSwapExtent(const VkSurfaceCapabilitiesKH
     }
     else {
         int width, height;
-        glfwGetFramebufferSize(pCore->window().pWindow, &width, &height);
+        glfwGetFramebufferSize(pCore->window().windowHandle(), &width, &height);
 
         VkExtent2D actualExtent = {
             static_cast<uint32_t>(width),

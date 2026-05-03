@@ -44,6 +44,7 @@ add_executable(VulkanEngineApp
   VulkanEngine/main.cpp
   VulkanEngine/Renderer.cpp
   VulkanEngine/VulkanCommandPoolEngine.cpp
+  VulkanEngine/VulkanContext.cpp
   VulkanEngine/VulkanDebugCallbackEngine.cpp
   VulkanEngine/VulkanDeviceEngine.cpp
   VulkanEngine/VulkanGraphicPipelineEngine.cpp

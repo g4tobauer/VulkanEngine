@@ -7,15 +7,16 @@
 class VulkanInstanceEngine : BaseEngine
 {
 public:
-	VkInstance* pInstance;
-
 	VulkanInstanceEngine(Core* core);
 	~VulkanInstanceEngine();
 
 	void createInstance();
 	void destroyInstance();
+	VkInstance instanceHandle() const;
+	VkInstance* instancePtr();
 
 private:
+	VkInstance* pInstance;
 	VkInstance instance;
 	VkApplicationInfo appInfo;
 	VkInstanceCreateInfo createInfo;

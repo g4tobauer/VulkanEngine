@@ -33,6 +33,16 @@ void VulkanInstanceEngine::destroyInstance()
 	vkDestroyInstance(instance, NULL);
 }
 
+VkInstance VulkanInstanceEngine::instanceHandle() const
+{
+	return instance;
+}
+
+VkInstance* VulkanInstanceEngine::instancePtr()
+{
+	return pInstance;
+}
+
 #pragma endregion
 
 #pragma region Private

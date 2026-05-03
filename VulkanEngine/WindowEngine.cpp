@@ -31,7 +31,7 @@ void WindowEngine::createWindow()
 }
 void WindowEngine::createSurface()
 {	
-	if (glfwCreateWindowSurface(*pCore->instance().pInstance, pWindow, NULL, &surface) != VK_SUCCESS) {
+	if (glfwCreateWindowSurface(pCore->instance().instanceHandle(), pWindow, NULL, &surface) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create window surface!");
 	}
 	pSurface = &surface;
@@ -52,12 +52,32 @@ void WindowEngine::putRequiredInstanceExtensions()
 }
 void WindowEngine::destroySurface()
 {
-	vkDestroySurfaceKHR(*pCore->instance().pInstance, surface, NULL);
+	vkDestroySurfaceKHR(pCore->instance().instanceHandle(), surface, NULL);
 }
 void WindowEngine::destroyWindow()
 {
 	glfwDestroyWindow(pWindow);
 	glfwTerminate();
+}
+
+GLFWwindow* WindowEngine::windowHandle() const
+{
+	return pWindow;
+}
+
+VkSurfaceKHR WindowEngine::surfaceHandle() const
+{
+	return surface;
+}
+
+bool WindowEngine::isFramebufferResized() const
+{
+	return framebufferResized;
+}
+
+void WindowEngine::clearFramebufferResized()
+{
+	framebufferResized = false;
 }
 
 #pragma endregion

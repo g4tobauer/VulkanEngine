@@ -7,14 +7,14 @@
 class VulkanGraphicPipelineEngine : BaseEngine
 {
 public:
-	VkPipeline *pGraphicsPipeline;
-
 	VulkanGraphicPipelineEngine(Core* core);
 	~VulkanGraphicPipelineEngine();
 
 	void createGraphicsPipeline();
 	void destroyGraphicsPipeline();
+	VkPipeline graphicsPipelineHandle() const;
 private:
+	VkPipeline *pGraphicsPipeline;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	

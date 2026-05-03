@@ -24,7 +24,7 @@ void Renderer::drawFrame()
 
 void Renderer::waitIdle()
 {
-	vkDeviceWaitIdle(*core_.device().pDevice);
+	vkDeviceWaitIdle(core_.device().deviceHandle());
 }
 
 void Renderer::shutdown()

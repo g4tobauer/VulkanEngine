@@ -7,8 +7,6 @@
 class VulkanCommandPoolEngine : BaseEngine
 {
 public:
-	std::vector<VkCommandBuffer> pCommandBuffers;
-
 	VulkanCommandPoolEngine(Core* core);
 	~VulkanCommandPoolEngine();
 	
@@ -18,7 +16,9 @@ public:
 	void createCommandBuffers();
 	
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+	const std::vector<VkCommandBuffer>& commandBuffersView() const;
 private:
+	std::vector<VkCommandBuffer> pCommandBuffers;
 	VkCommandPool commandPool;
 	std::vector<VkCommandBuffer> commandBuffers;
 };
