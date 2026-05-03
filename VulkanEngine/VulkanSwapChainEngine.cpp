@@ -24,7 +24,7 @@ VulkanSwapChainEngine::~VulkanSwapChainEngine()
 
 void VulkanSwapChainEngine::createSwapChain()
 {    
-	SwapChainSupportDetails swapChainSupport = pCore->pVulkanDeviceEngine->querySwapChainSupport();
+	SwapChainSupportDetails swapChainSupport = pCore->device().querySwapChainSupport();
     VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
     VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
     VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
@@ -36,7 +36,7 @@ void VulkanSwapChainEngine::createSwapChain()
 
     VkSwapchainCreateInfoKHR createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-    createInfo.surface = *(pCore->pWindowEngine->pSurface);
+    createInfo.surface = *(pCore->window().pSurface);
 
     createInfo.minImageCount = imageCount;
     createInfo.imageFormat = surfaceFormat.format;
@@ -45,7 +45,7 @@ void VulkanSwapChainEngine::createSwapChain()
     createInfo.imageArrayLayers = 1;
     createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-    QueueFamilyIndices indices = *(pCore->pVulkanDeviceEngine->pIndices);
+    QueueFamilyIndices indices = *(pCore->device().pIndices);
     uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
     if (indices.graphicsFamily != indices.presentFamily) {
@@ -64,14 +64,14 @@ void VulkanSwapChainEngine::createSwapChain()
 
     createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-    if (vkCreateSwapchainKHR(*(pCore->pVulkanDeviceEngine->pDevice), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
+    if (vkCreateSwapchainKHR(*(pCore->device().pDevice), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
         throw std::runtime_error("failed to create swap chain!");
     }
     pSwapChain = &swapChain;
 
-    vkGetSwapchainImagesKHR(*(pCore->pVulkanDeviceEngine->pDevice), swapChain, &imageCount, nullptr);
+    vkGetSwapchainImagesKHR(*(pCore->device().pDevice), swapChain, &imageCount, nullptr);
     swapChainImages.resize(imageCount);
-    vkGetSwapchainImagesKHR(*(pCore->pVulkanDeviceEngine->pDevice), swapChain, &imageCount, swapChainImages.data());
+    vkGetSwapchainImagesKHR(*(pCore->device().pDevice), swapChain, &imageCount, swapChainImages.data());
 
     swapChainImageFormat = surfaceFormat.format;
     pSwapChainImageFormat = &swapChainImageFormat;
@@ -82,27 +82,27 @@ void VulkanSwapChainEngine::createSwapChain()
 
 void VulkanSwapChainEngine::recreateSwapChain() {
     int width = 0, height = 0;
-    glfwGetFramebufferSize(pCore->pWindowEngine->pWindow, &width, &height);
+    glfwGetFramebufferSize(pCore->window().pWindow, &width, &height);
     while (width == 0 || height == 0) {
-        glfwGetFramebufferSize(pCore->pWindowEngine->pWindow, &width, &height);
+        glfwGetFramebufferSize(pCore->window().pWindow, &width, &height);
         glfwWaitEvents();
     }
 
-    vkDeviceWaitIdle(*(pCore->pVulkanDeviceEngine->pDevice));
+    vkDeviceWaitIdle(*(pCore->device().pDevice));
 
-    pCore->pVulkanGraphicPipelineEngine->destroyGraphicsPipeline();
+    pCore->graphicPipeline().destroyGraphicsPipeline();
     destroyRenderPass();
     cleanupSwapChain();
 
     createSwapChain();
     createImageViews();
     createRenderPass();
-    pCore->pVulkanGraphicPipelineEngine->createGraphicsPipeline();
+    pCore->graphicPipeline().createGraphicsPipeline();
     createFramebuffers();
 }
 
 void VulkanSwapChainEngine::cleanupSwapChain() {
-    VkDevice device = *(pCore->pVulkanDeviceEngine->pDevice);
+    VkDevice device = *(pCore->device().pDevice);
     for (auto framebuffer : swapChainFramebuffers) {
         vkDestroyFramebuffer(device, framebuffer, nullptr);
     }
@@ -121,7 +121,7 @@ void VulkanSwapChainEngine::cleanupSwapChain() {
 void VulkanSwapChainEngine::createRenderPass()
 {
     VkAttachmentDescription colorAttachment{};
-    colorAttachment.format = *(pCore->pVulkanSwapChainEngine->pSwapChainImageFormat);
+    colorAttachment.format = *(pCore->swapChain().pSwapChainImageFormat);
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -156,14 +156,14 @@ void VulkanSwapChainEngine::createRenderPass()
     renderPassInfo.dependencyCount = 1;
     renderPassInfo.pDependencies = &dependency;
 
-    if (vkCreateRenderPass(*(pCore->pVulkanDeviceEngine->pDevice), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
+    if (vkCreateRenderPass(*(pCore->device().pDevice), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
         throw std::runtime_error("failed to create render pass!");
     }
     pRenderPass = &renderPass;
 }
 void VulkanSwapChainEngine::destroyRenderPass()
 {
-    vkDestroyRenderPass(*(pCore->pVulkanDeviceEngine->pDevice), renderPass, nullptr);
+    vkDestroyRenderPass(*(pCore->device().pDevice), renderPass, nullptr);
 }
 
 void VulkanSwapChainEngine::createFramebuffers() {
@@ -183,7 +183,7 @@ void VulkanSwapChainEngine::createFramebuffers() {
         framebufferInfo.height = swapChainExtent.height;
         framebufferInfo.layers = 1;
 
-        if (vkCreateFramebuffer(*(pCore->pVulkanDeviceEngine->pDevice), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
+        if (vkCreateFramebuffer(*(pCore->device().pDevice), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
             throw std::runtime_error("failed to create framebuffer!");
         }
     }
@@ -209,7 +209,7 @@ void VulkanSwapChainEngine::createImageViews()
         createInfo.subresourceRange.baseArrayLayer = 0;
         createInfo.subresourceRange.layerCount = 1;
 
-        if (vkCreateImageView(*(pCore->pVulkanDeviceEngine->pDevice), &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
+        if (vkCreateImageView(*(pCore->device().pDevice), &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
             throw std::runtime_error("failed to create image views!");
         }
     }
@@ -241,7 +241,7 @@ VkExtent2D VulkanSwapChainEngine::chooseSwapExtent(const VkSurfaceCapabilitiesKH
     }
     else {
         int width, height;
-        glfwGetFramebufferSize(pCore->pWindowEngine->pWindow, &width, &height);
+        glfwGetFramebufferSize(pCore->window().pWindow, &width, &height);
 
         VkExtent2D actualExtent = {
             static_cast<uint32_t>(width),

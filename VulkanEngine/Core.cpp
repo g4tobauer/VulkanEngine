@@ -1,121 +1,19 @@
 #include "Core.h"
 
-#pragma region Public
-
 Core::Core()
+	: fileStreamEngine_(std::make_unique<FileStreamEngine>(this)),
+	  windowEngine_(std::make_unique<WindowEngine>(this)),
+	  vulkanInstanceEngine_(std::make_unique<VulkanInstanceEngine>(this)),
+	  vulkanDebugCallbackEngine_(std::make_unique<VulkanDebugCallbackEngine>(this)),
+	  vulkanDeviceEngine_(std::make_unique<VulkanDeviceEngine>(this)),
+	  vulkanSwapChainEngine_(std::make_unique<VulkanSwapChainEngine>(this)),
+	  vulkanGraphicPipelineEngine_(std::make_unique<VulkanGraphicPipelineEngine>(this)),
+	  vulkanCommandPoolEngine_(std::make_unique<VulkanCommandPoolEngine>(this)),
+	  vulkanSemaphoresEngine_(std::make_unique<VulkanSemaphoresEngine>(this))
 {
-	pFileStreamEngine = new FileStreamEngine(this);
-	pWindowEngine = new WindowEngine(this);
-	pVulkanInstanceEngine = new VulkanInstanceEngine(this);
-	pVulkanDebugCallbackEngine = new VulkanDebugCallbackEngine(this);
-	pVulkanDeviceEngine = new VulkanDeviceEngine(this);
-	pVulkanSwapChainEngine = new VulkanSwapChainEngine(this);
-	pVulkanGraphicPipelineEngine = new VulkanGraphicPipelineEngine(this);	
-	pVulkanCommandPoolEngine = new VulkanCommandPoolEngine(this);
-	pVulkanSemaphoresEngine = new VulkanSemaphoresEngine(this);
 }
 
-Core::~Core()
-{
-	delete pFileStreamEngine;
-	pFileStreamEngine = NULL;
-	
-	delete pVulkanSemaphoresEngine;
-	pVulkanSemaphoresEngine = NULL;
-
-	delete pVulkanCommandPoolEngine;
-	pVulkanCommandPoolEngine = NULL;
-
-	delete pVulkanGraphicPipelineEngine;
-	pVulkanGraphicPipelineEngine = NULL;
-
-	delete pVulkanSwapChainEngine;
-	pVulkanSwapChainEngine = NULL;
-
-	delete pVulkanDeviceEngine;
-	pVulkanDeviceEngine = NULL;
-
-	delete pVulkanDebugCallbackEngine;
-	pVulkanDebugCallbackEngine = NULL;
-
-	delete pVulkanInstanceEngine;
-	pVulkanInstanceEngine = NULL;
-
-	delete pWindowEngine;
-	pWindowEngine = NULL;
-
-	engineExtentions.clear();
-}
-
-void Core::run()
-{
-	initWindow();
-	initVulkan();
-	mainLoop();
-	cleanup();
-}
-
-#pragma endregion
-
-#pragma region Private
-
-void Core::initWindow()
-{
-	pWindowEngine->createWindow();
-}
-
-void Core::initVulkan()
-{
-	if (volkInitialize() != VK_SUCCESS)
-	{
-		throw std::runtime_error("failed to initialize volk!");
-	}
-
-	if constexpr (enableValidationLayers)
-	{
-		if (!checkValidationLayerSupport())
-		{
-			throw std::runtime_error("validation layers requested, but not available!");
-		}
-	}
-	pVulkanInstanceEngine->createInstance();
-	volkLoadInstance(*pVulkanInstanceEngine->pInstance);
-	pWindowEngine->createSurface();
-	pVulkanDeviceEngine->pickPhysicalDevice();
-	pVulkanDeviceEngine->createLogicalDevice();
-	volkLoadDevice(*pVulkanDeviceEngine->pDevice);
-	pVulkanSwapChainEngine->createSwapChain();
-	pVulkanSwapChainEngine->createImageViews();
-	pVulkanSwapChainEngine->createRenderPass();
-	pVulkanGraphicPipelineEngine->createGraphicsPipeline();
-	pVulkanSwapChainEngine->createFramebuffers();
-	pVulkanCommandPoolEngine->createCommandPool();
-	pVulkanCommandPoolEngine->createCommandBuffers();
-	pVulkanSemaphoresEngine->createSyncObjects();
-}
-
-void Core::mainLoop()
-{
-	while (pWindowEngine->isOpen())
-	{
-		pVulkanSemaphoresEngine->drawFrame();
-	}
-	vkDeviceWaitIdle(*(pVulkanDeviceEngine->pDevice));
-}
-
-void Core::cleanup()
-{
-	pVulkanSwapChainEngine->cleanupSwapChain();
-	pVulkanGraphicPipelineEngine->destroyGraphicsPipeline();
-	pVulkanSwapChainEngine->destroyRenderPass();
-	pVulkanSemaphoresEngine->destroySyncObjects();
-	pVulkanCommandPoolEngine->destroyCommandPool();
-	pVulkanDeviceEngine->destroyDevice();
-	pVulkanDebugCallbackEngine->destroyDebugCallback();
-	pWindowEngine->destroySurface();
-	pVulkanInstanceEngine->destroyInstance();
-	pWindowEngine->destroyWindow();
-}
+Core::~Core() = default;
 
 bool Core::checkValidationLayerSupport()
 {
@@ -144,4 +42,58 @@ bool Core::checkValidationLayerSupport()
 	}
 	return true;
 }
-#pragma endregion
+
+FileStreamEngine& Core::fileStream() const
+{
+	return *fileStreamEngine_;
+}
+
+WindowEngine& Core::window() const
+{
+	return *windowEngine_;
+}
+
+VulkanInstanceEngine& Core::instance() const
+{
+	return *vulkanInstanceEngine_;
+}
+
+VulkanDebugCallbackEngine& Core::debugCallback() const
+{
+	return *vulkanDebugCallbackEngine_;
+}
+
+VulkanDeviceEngine& Core::device() const
+{
+	return *vulkanDeviceEngine_;
+}
+
+VulkanSwapChainEngine& Core::swapChain() const
+{
+	return *vulkanSwapChainEngine_;
+}
+
+VulkanGraphicPipelineEngine& Core::graphicPipeline() const
+{
+	return *vulkanGraphicPipelineEngine_;
+}
+
+VulkanCommandPoolEngine& Core::commandPool() const
+{
+	return *vulkanCommandPoolEngine_;
+}
+
+VulkanSemaphoresEngine& Core::semaphores() const
+{
+	return *vulkanSemaphoresEngine_;
+}
+
+std::vector<const char*>& Core::instanceExtensions()
+{
+	return engineExtentions_;
+}
+
+const std::vector<const char*>& Core::instanceExtensions() const
+{
+	return engineExtentions_;
+}

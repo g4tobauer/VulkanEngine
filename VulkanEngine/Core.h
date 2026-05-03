@@ -15,6 +15,7 @@
 #include "VulkanGraphicPipelineEngine.h"
 #include "VulkanCommandPoolEngine.h"
 #include "VulkanSemaphoresEngine.h"
+#include <memory>
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -38,28 +39,35 @@ constexpr bool enableValidationLayers = false;
 class Core
 {
 public:
-	FileStreamEngine* pFileStreamEngine;
-	WindowEngine* pWindowEngine;
-	VulkanInstanceEngine* pVulkanInstanceEngine;
-	VulkanDebugCallbackEngine* pVulkanDebugCallbackEngine;
-	VulkanDeviceEngine* pVulkanDeviceEngine;
-	VulkanSwapChainEngine* pVulkanSwapChainEngine;
-	VulkanGraphicPipelineEngine* pVulkanGraphicPipelineEngine;
-	VulkanCommandPoolEngine* pVulkanCommandPoolEngine;
-	VulkanSemaphoresEngine* pVulkanSemaphoresEngine;
-	
-	std::vector<const char*> engineExtentions;
-
 	Core();
 	~Core();
 
-	void run();
-private:
-	void initWindow();
-	void initVulkan();
-	void mainLoop();
-	void cleanup();
 	bool checkValidationLayerSupport();
+
+	FileStreamEngine& fileStream() const;
+	WindowEngine& window() const;
+	VulkanInstanceEngine& instance() const;
+	VulkanDebugCallbackEngine& debugCallback() const;
+	VulkanDeviceEngine& device() const;
+	VulkanSwapChainEngine& swapChain() const;
+	VulkanGraphicPipelineEngine& graphicPipeline() const;
+	VulkanCommandPoolEngine& commandPool() const;
+	VulkanSemaphoresEngine& semaphores() const;
+
+	std::vector<const char*>& instanceExtensions();
+	const std::vector<const char*>& instanceExtensions() const;
+
+private:
+	std::unique_ptr<FileStreamEngine> fileStreamEngine_;
+	std::unique_ptr<WindowEngine> windowEngine_;
+	std::unique_ptr<VulkanInstanceEngine> vulkanInstanceEngine_;
+	std::unique_ptr<VulkanDebugCallbackEngine> vulkanDebugCallbackEngine_;
+	std::unique_ptr<VulkanDeviceEngine> vulkanDeviceEngine_;
+	std::unique_ptr<VulkanSwapChainEngine> vulkanSwapChainEngine_;
+	std::unique_ptr<VulkanGraphicPipelineEngine> vulkanGraphicPipelineEngine_;
+	std::unique_ptr<VulkanCommandPoolEngine> vulkanCommandPoolEngine_;
+	std::unique_ptr<VulkanSemaphoresEngine> vulkanSemaphoresEngine_;
+	std::vector<const char*> engineExtentions_;
 };
 #endif // !ENGINE_CORE
 

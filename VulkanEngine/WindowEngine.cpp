@@ -31,7 +31,7 @@ void WindowEngine::createWindow()
 }
 void WindowEngine::createSurface()
 {	
-	if (glfwCreateWindowSurface(*pCore->pVulkanInstanceEngine->pInstance, pWindow, NULL, &surface) != VK_SUCCESS) {
+	if (glfwCreateWindowSurface(*pCore->instance().pInstance, pWindow, NULL, &surface) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create window surface!");
 	}
 	pSurface = &surface;
@@ -48,11 +48,11 @@ void WindowEngine::putRequiredInstanceExtensions()
 	uint32_t glfwExtensionCount = 0;
 	const char** glfwExtensions;
 	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-	pCore->engineExtentions.assign(glfwExtensions, glfwExtensions + glfwExtensionCount);
+	pCore->instanceExtensions().assign(glfwExtensions, glfwExtensions + glfwExtensionCount);
 }
 void WindowEngine::destroySurface()
 {
-	vkDestroySurfaceKHR(*pCore->pVulkanInstanceEngine->pInstance, surface, NULL);
+	vkDestroySurfaceKHR(*pCore->instance().pInstance, surface, NULL);
 }
 void WindowEngine::destroyWindow()
 {

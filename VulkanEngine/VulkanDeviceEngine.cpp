@@ -32,7 +32,7 @@ VulkanDeviceEngine::~VulkanDeviceEngine()
 void VulkanDeviceEngine::pickPhysicalDevice()
 {	
 	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(*pCore->pVulkanInstanceEngine->pInstance, &deviceCount, NULL);
+	vkEnumeratePhysicalDevices(*pCore->instance().pInstance, &deviceCount, NULL);
 
 	if (deviceCount == 0) 
 	{
@@ -40,7 +40,7 @@ void VulkanDeviceEngine::pickPhysicalDevice()
 	}
 
 	std::vector<VkPhysicalDevice> devices(deviceCount);
-	vkEnumeratePhysicalDevices(*pCore->pVulkanInstanceEngine->pInstance, &deviceCount, devices.data());
+	vkEnumeratePhysicalDevices(*pCore->instance().pInstance, &deviceCount, devices.data());
 
 	for (const auto& device : devices) 
 	{
@@ -80,7 +80,7 @@ void VulkanDeviceEngine::destroyDevice()
 SwapChainSupportDetails VulkanDeviceEngine::querySwapChainSupport()
 {
 	VkPhysicalDevice device = physicalDevice;
-	VkSurfaceKHR surface = *(pCore->pWindowEngine->pSurface);
+	VkSurfaceKHR surface = *(pCore->window().pSurface);
 	SwapChainSupportDetails details;
 
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
@@ -179,7 +179,7 @@ void VulkanDeviceEngine::findQueueFamilies(VkPhysicalDevice device)
 			indices.graphicsFamily = i;
 		}
 		VkBool32 presentSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, *pCore->pWindowEngine->pSurface, &presentSupport);
+		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, *pCore->window().pSurface, &presentSupport);
 		if (queueFamily.queueCount > 0 && presentSupport)
 		{
 			indices.presentFamily = i;

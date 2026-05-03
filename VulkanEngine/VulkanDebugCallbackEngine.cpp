@@ -21,24 +21,24 @@ void VulkanDebugCallbackEngine::setupDebugCallback()
 void VulkanDebugCallbackEngine::createDebugCallback()
 {
 	if (!enableValidationLayers) return;
-	if (CreateDebugUtilsMessengerEXT(*pCore->pVulkanInstanceEngine->pInstance, &utilsMessengerCreateInfo, NULL, &utilsMessengerCallback) != VK_SUCCESS)
+	if (CreateDebugUtilsMessengerEXT(*pCore->instance().pInstance, &utilsMessengerCreateInfo, NULL, &utilsMessengerCallback) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to set up debug callback!");
 	}
 }
 void VulkanDebugCallbackEngine::putExtensions()
 {
-	pCore->pWindowEngine->putRequiredInstanceExtensions();
+	pCore->window().putRequiredInstanceExtensions();
 	if (enableValidationLayers)
 	{
-		pCore->engineExtentions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		pCore->instanceExtensions().push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 	}
 }
 void VulkanDebugCallbackEngine::destroyDebugCallback()
 {
 	if (enableValidationLayers) 
 	{
-		DestroyDebugUtilsMessengerEXT(*pCore->pVulkanInstanceEngine->pInstance, utilsMessengerCallback, NULL);
+		DestroyDebugUtilsMessengerEXT(*pCore->instance().pInstance, utilsMessengerCallback, NULL);
 	}
 }
 #pragma endregion

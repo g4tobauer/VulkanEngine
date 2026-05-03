@@ -16,8 +16,8 @@ VulkanGraphicPipelineEngine::~VulkanGraphicPipelineEngine()
 
 void VulkanGraphicPipelineEngine::createGraphicsPipeline()
 {   
-    auto vertShaderCode = pCore->pFileStreamEngine->readFile("shaders/vert.spv");
-    auto fragShaderCode = pCore->pFileStreamEngine->readFile("shaders/frag.spv");
+    auto vertShaderCode = pCore->fileStream().readFile("shaders/vert.spv");
+    auto fragShaderCode = pCore->fileStream().readFile("shaders/frag.spv");
 
     VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
     VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -95,7 +95,7 @@ void VulkanGraphicPipelineEngine::createGraphicsPipeline()
     pipelineLayoutInfo.setLayoutCount = 0;
     pipelineLayoutInfo.pushConstantRangeCount = 0;
 
-    if (vkCreatePipelineLayout(*(pCore->pVulkanDeviceEngine->pDevice), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+    if (vkCreatePipelineLayout(*(pCore->device().pDevice), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
         throw std::runtime_error("failed to create pipeline layout!");
     }
 
@@ -111,22 +111,22 @@ void VulkanGraphicPipelineEngine::createGraphicsPipeline()
     pipelineInfo.pColorBlendState = &colorBlending;
     pipelineInfo.pDynamicState = &dynamicState;
     pipelineInfo.layout = pipelineLayout;
-    pipelineInfo.renderPass = *(pCore->pVulkanSwapChainEngine->pRenderPass);
+    pipelineInfo.renderPass = *(pCore->swapChain().pRenderPass);
     pipelineInfo.subpass = 0;
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-    if (vkCreateGraphicsPipelines(*(pCore->pVulkanDeviceEngine->pDevice), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+    if (vkCreateGraphicsPipelines(*(pCore->device().pDevice), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
         throw std::runtime_error("failed to create graphics pipeline!");
     }
     pGraphicsPipeline = &graphicsPipeline;
     
-    vkDestroyShaderModule(*(pCore->pVulkanDeviceEngine->pDevice), fragShaderModule, nullptr);
-    vkDestroyShaderModule(*(pCore->pVulkanDeviceEngine->pDevice), vertShaderModule, nullptr);
+    vkDestroyShaderModule(*(pCore->device().pDevice), fragShaderModule, nullptr);
+    vkDestroyShaderModule(*(pCore->device().pDevice), vertShaderModule, nullptr);
 }
 void VulkanGraphicPipelineEngine::destroyGraphicsPipeline()
 {
-    vkDestroyPipeline(*(pCore->pVulkanDeviceEngine->pDevice), graphicsPipeline, nullptr);
-    vkDestroyPipelineLayout(*(pCore->pVulkanDeviceEngine->pDevice), pipelineLayout, nullptr);
+    vkDestroyPipeline(*(pCore->device().pDevice), graphicsPipeline, nullptr);
+    vkDestroyPipelineLayout(*(pCore->device().pDevice), pipelineLayout, nullptr);
 }
 
 #pragma endregion
@@ -140,7 +140,7 @@ VkShaderModule VulkanGraphicPipelineEngine::createShaderModule(const std::vector
     createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
     VkShaderModule shaderModule;
-    if (vkCreateShaderModule(*(pCore->pVulkanDeviceEngine->pDevice), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
+    if (vkCreateShaderModule(*(pCore->device().pDevice), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
         throw std::runtime_error("failed to create shader module!");
     }
 

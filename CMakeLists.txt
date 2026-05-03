@@ -38,9 +38,11 @@ set(VULKAN_HEADERS_INSTALL_DIR "${vulkan_headers_SOURCE_DIR}" CACHE PATH "" FORC
 FetchContent_MakeAvailable(glfw volk)
 
 add_executable(VulkanEngineApp
+  VulkanEngine/Application.cpp
   VulkanEngine/Core.cpp
   VulkanEngine/FileStreamEngine.cpp
   VulkanEngine/main.cpp
+  VulkanEngine/Renderer.cpp
   VulkanEngine/VulkanCommandPoolEngine.cpp
   VulkanEngine/VulkanDebugCallbackEngine.cpp
   VulkanEngine/VulkanDeviceEngine.cpp
