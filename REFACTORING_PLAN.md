@@ -79,6 +79,9 @@ Hoje o projeto ja:
 - materiais basicos por `MaterialAssetId`
 - base inicial de `TextureAssetId` e UV preparada para texturas futuras
 - primeiro caminho real de textura Vulkan com `VkImage`, `VkImageView`, `VkSampler` e `combined image sampler`
+- `depth buffer` inicial integrado ao render pass, framebuffer e pipeline
+- primeira base 3D simples com vertices em `vec3`, camera em perspectiva e objetos separados em profundidade
+- primeira malha 3D de validacao com cubo indexado e multiplos objetos compartilhando a mesma malha
 
 ### Fase atual em andamento
 
@@ -445,6 +448,9 @@ Coisas que devemos perseguir desde cedo:
 
 - [~] texturas, materiais e asset manager inicial
 - [~] primeiro sampler de textura real no shader
+- [~] primeiro `depth buffer` funcional para preparar a base 3D
+- [~] primeira camera em perspectiva e uso real de profundidade
+- [~] primeira malha 3D mais representativa para validar a arquitetura
 
 ## Como Vamos Trabalhar
 

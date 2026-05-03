@@ -13,6 +13,9 @@ Hoje ela ja tem:
 - compartilhamento de malha por asset
 - materiais basicos por asset
 - texturas placeholder reais no Vulkan por asset
+- `depth buffer` inicial no renderer
+- primeira base 3D simples com perspectiva
+- primeira malha 3D de validacao com cubo
 - pipeline grafico configurado por shaders SPIR-V
 
 O objetivo desta documentacao e ajudar quem for estudar o projeto a entender:
@@ -212,10 +215,19 @@ No projeto, uma `Mesh` contem:
 - vertices
 - indices
 
+Hoje a engine ja consegue representar tanto uma malha muito simples, como triangulo, quanto uma malha 3D mais realista de teste, como um cubo indexado.
+
 Exemplo mental:
 
 - vertices = pontos com atributos
 - indices = ordem em que os vertices formam triangulos
+
+No cubo atual, usamos:
+
+- 24 vertices
+- 36 indices
+
+Isso acontece porque cada face precisa de combinacoes proprias de cor e UV, entao nem sempre um cubo pode ser representado por apenas 8 vertices compartilhados.
 
 ### O que e `Vertex`
 
@@ -223,7 +235,7 @@ Exemplo mental:
 
 No projeto atual, ele tem:
 
-- posicao 2D
+- posicao 3D
 - cor RGB
 - UV
 
@@ -313,6 +325,11 @@ Exemplo:
 - como a imagem sera limpa
 - como ela sera usada antes/depois do draw
 
+Hoje o `render pass` da engine ja tem:
+
+- um attachment de cor para a imagem da swapchain
+- um attachment de profundidade para testes de depth
+
 ### O que e `Swapchain`
 
 `Swapchain` e a fila de imagens que vao para a tela.
@@ -322,6 +339,28 @@ Fluxo mental:
 1. pegar uma imagem disponivel
 2. desenhar nela
 3. apresentar na janela
+
+### O que e `Depth Buffer`
+
+`Depth Buffer` e uma imagem usada para guardar a profundidade de cada pixel desenhado.
+
+Ele serve para a GPU decidir qual fragmento esta na frente e qual esta atras.
+
+Sem isso, em cenas 3D, a ordem de desenho pode ficar errada. Um objeto mais distante pode aparecer por cima de um mais proximo.
+
+Na engine atual, o `depth buffer` ja existe como:
+
+- `VkImage`
+- `VkDeviceMemory`
+- `VkImageView`
+
+Ele e criado junto com a swapchain e conectado:
+
+- ao `render pass`
+- aos `framebuffers`
+- ao estado de `depth test` do pipeline
+
+Depois da introducao da camera em perspectiva, ele comeca a ter efeito real no conteudo da cena, porque os objetos agora podem ficar em profundidades diferentes no eixo `Z`.
 
 ### O que e `Command Buffer`
 
@@ -448,6 +487,11 @@ Resumo por frame:
 7. a fila grafica submete os comandos
 8. a imagem e apresentada
 
+Antes do draw, o frame atual tambem limpa:
+
+- a cor da tela
+- o `depth buffer`
+
 ## Por que a arquitetura foi ficando assim
 
 A arquitetura evoluiu em camadas:
@@ -460,6 +504,7 @@ A arquitetura evoluiu em camadas:
 6. e comecamos a separar geometria de aparencia com materiais
 7. preparamos UVs e `TextureAsset` para texturas reais
 8. ligamos o primeiro `combined image sampler` no material
+9. ligamos o primeiro `depth buffer` real no renderer
 
 O motivo principal e evitar crescimento em cima de uma base fraca.
 
@@ -495,6 +540,7 @@ Ainda nao temos:
 - lighting
 - carregamento de modelo externo
 - carregador de imagem de arquivo real
+- camera em perspectiva e uso real de profundidade para objetos 3D
 
 Ou seja: a base ja e bem melhor do que um tutorial puro, mas ainda esta numa fase inicial de engine.
 
@@ -506,6 +552,7 @@ Os proximos passos mais naturais sao:
 - carregamento real de imagem de arquivo
 - depth buffer
 - camera controlavel
+- perspectiva e meshes com profundidade real
 - carregamento de malha externa
 - cena com mais componentes
 
@@ -523,3 +570,11 @@ Hoje a engine funciona assim:
 - `Vulkan*Engine` cuida dos objetos Vulkan de baixo nivel
 
 Ela foi estruturada desse jeito para crescer com mais seguranca, mais clareza e melhor performance do que um `Hello Triangle` monolitico.
+
+Na cena padrao atual, o renderer desenha dois cubos que compartilham a mesma malha de asset, mas usam materiais diferentes. Isso ajuda a validar ao mesmo tempo:
+
+- compartilhamento de geometria
+- materiais por objeto
+- textura placeholder
+- profundidade
+- perspectiva

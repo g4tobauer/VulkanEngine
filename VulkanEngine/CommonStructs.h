@@ -31,7 +31,7 @@ struct QueueFamilyIndices
 
 struct Vertex
 {
-    float position[2];
+    float position[3];
     float color[3];
     float uv[2];
 
@@ -50,7 +50,7 @@ struct Vertex
 
         attributeDescriptions[0].binding = 0;
         attributeDescriptions[0].location = 0;
-        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
         attributeDescriptions[0].offset = offsetof(Vertex, position);
 
         attributeDescriptions[1].binding = 0;
@@ -123,6 +123,18 @@ struct Mat4
             -(top + bottom) / (top - bottom),
             -(farPlane + nearPlane) / (farPlane - nearPlane),
             1.0f
+        }};
+    }
+
+    static Mat4 perspective(float fovRadians, float aspect, float nearPlane, float farPlane)
+    {
+        const float tanHalfFov = std::tan(fovRadians * 0.5f);
+
+        return Mat4{{
+            1.0f / (aspect * tanHalfFov), 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f / tanHalfFov, 0.0f, 0.0f,
+            0.0f, 0.0f, -(farPlane + nearPlane) / (farPlane - nearPlane), -1.0f,
+            0.0f, 0.0f, -(2.0f * farPlane * nearPlane) / (farPlane - nearPlane), 0.0f
         }};
     }
 };

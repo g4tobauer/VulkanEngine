@@ -47,8 +47,14 @@ void CameraEngine::shutdown()
 void CameraEngine::updateUniformBuffer(uint32_t currentFrame)
 {
     UniformBufferObject ubo{};
-    ubo.view = Mat4::identity();
-    ubo.projection = Mat4::orthographic(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+    const VkExtent2D extent = pCore->swapChain().swapChainExtentValue();
+    const float aspectRatio = extent.height == 0
+        ? 1.0f
+        : static_cast<float>(extent.width) / static_cast<float>(extent.height);
+
+    ubo.view = Mat4::translation(0.0f, 0.0f, -2.5f);
+    ubo.projection = Mat4::perspective(3.14159265f / 3.0f, aspectRatio, 0.1f, 10.0f);
+    ubo.projection.elements[5] *= -1.0f;
     ubo.viewProjection = multiply(ubo.projection, ubo.view);
 
     uniformBuffers[currentFrame].write(&ubo, sizeof(ubo));

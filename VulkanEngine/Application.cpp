@@ -24,23 +24,23 @@ void Application::mainLoop()
 {
 	renderer_.initialize();
 	auto& scene = core_.scene();
-	EntityId rightTriangleId = 0;
+	EntityId animatedObjectId = 0;
 
 	if (scene.renderObjects().size() > 1)
 	{
-		rightTriangleId = scene.renderObjects()[1].id;
+		animatedObjectId = scene.renderObjects()[1].id;
 	}
 
 	while (core_.window().isOpen())
 	{
-		if (rightTriangleId != 0)
+		if (animatedObjectId != 0)
 		{
-			SceneObject* object = scene.findObject(rightTriangleId);
+			SceneObject* object = scene.findObject(animatedObjectId);
 			if (object != nullptr)
 			{
 				Transform updatedTransform = object->transform;
 				updatedTransform.rotationRadians += 0.01f;
-				scene.updateTransform(rightTriangleId, updatedTransform);
+				scene.updateTransform(animatedObjectId, updatedTransform);
 			}
 		}
 
