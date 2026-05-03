@@ -34,6 +34,7 @@ struct Vertex
     float position[3];
     float color[3];
     float uv[2];
+    float normal[3];
 
     static VkVertexInputBindingDescription getBindingDescription()
     {
@@ -44,9 +45,9 @@ struct Vertex
         return bindingDescription;
     }
 
-    static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions()
+    static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions()
     {
-        std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
+        std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
 
         attributeDescriptions[0].binding = 0;
         attributeDescriptions[0].location = 0;
@@ -62,6 +63,11 @@ struct Vertex
         attributeDescriptions[2].location = 2;
         attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
         attributeDescriptions[2].offset = offsetof(Vertex, uv);
+
+        attributeDescriptions[3].binding = 0;
+        attributeDescriptions[3].location = 3;
+        attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[3].offset = offsetof(Vertex, normal);
 
         return attributeDescriptions;
     }
@@ -164,6 +170,9 @@ struct UniformBufferObject
     Mat4 view;
     Mat4 projection;
     Mat4 viewProjection;
+    float lightDirection[4] = { -0.45f, -0.8f, -0.35f, 0.0f };
+    float lightColor[4] = { 1.0f, 0.98f, 0.92f, 1.0f };
+    float ambientColor[4] = { 0.22f, 0.24f, 0.3f, 1.0f };
 };
 
 struct MeshPushConstants

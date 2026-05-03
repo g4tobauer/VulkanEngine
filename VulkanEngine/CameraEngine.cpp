@@ -56,6 +56,18 @@ void CameraEngine::updateUniformBuffer(uint32_t currentFrame)
     ubo.projection = Mat4::perspective(3.14159265f / 3.0f, aspectRatio, 0.1f, 10.0f);
     ubo.projection.elements[5] *= -1.0f;
     ubo.viewProjection = multiply(ubo.projection, ubo.view);
+    ubo.lightDirection[0] = -0.45f;
+    ubo.lightDirection[1] = -0.8f;
+    ubo.lightDirection[2] = -0.35f;
+    ubo.lightDirection[3] = 0.0f;
+    ubo.lightColor[0] = 1.0f;
+    ubo.lightColor[1] = 0.98f;
+    ubo.lightColor[2] = 0.92f;
+    ubo.lightColor[3] = 1.0f;
+    ubo.ambientColor[0] = 0.22f;
+    ubo.ambientColor[1] = 0.24f;
+    ubo.ambientColor[2] = 0.30f;
+    ubo.ambientColor[3] = 1.0f;
 
     uniformBuffers[currentFrame].write(&ubo, sizeof(ubo));
 }
@@ -76,7 +88,7 @@ void CameraEngine::createDescriptorSetLayout()
     uboLayoutBinding.binding = 0;
     uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     uboLayoutBinding.descriptorCount = 1;
-    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 
     VkDescriptorSetLayoutCreateInfo layoutInfo{};
     layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;

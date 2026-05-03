@@ -16,6 +16,7 @@ Hoje ela ja tem:
 - `depth buffer` inicial no renderer
 - primeira base 3D simples com perspectiva
 - primeira malha 3D de validacao com cubo
+- primeira iluminacao basica
 - pipeline grafico configurado por shaders SPIR-V
 
 O objetivo desta documentacao e ajudar quem for estudar o projeto a entender:
@@ -238,13 +239,15 @@ No projeto atual, ele tem:
 - posicao 3D
 - cor RGB
 - UV
+- normal
 
 No futuro, poderia ter tambem:
 
-- normal
 - UV
 - tangente
 - pesos de animacao
+
+Hoje a `normal` ja esta sendo usada para a primeira iluminacao direcional simples.
 
 ### O que e `Index Buffer`
 
@@ -283,6 +286,9 @@ No projeto atual, ele carrega:
 - view
 - projection
 - viewProjection
+- direcao da luz
+- cor da luz
+- cor ambiente
 
 Esses dados costumam mudar por frame ou por camera.
 
@@ -361,6 +367,34 @@ Ele e criado junto com a swapchain e conectado:
 - ao estado de `depth test` do pipeline
 
 Depois da introducao da camera em perspectiva, ele comeca a ter efeito real no conteudo da cena, porque os objetos agora podem ficar em profundidades diferentes no eixo `Z`.
+
+### O que e `Normal`
+
+`Normal` e um vetor que indica para que lado uma superficie esta apontando.
+
+Ela e essencial para iluminacao, porque a luz depende do angulo entre:
+
+- a direcao da luz
+- a orientacao da superficie
+
+Na engine atual, cada vertice ja pode carregar uma `normal`, e o shader usa isso para um modelo simples de iluminacao difusa.
+
+### O que e `Luz Direcional`
+
+Uma luz direcional representa uma luz que vem sempre da mesma direcao, como o sol.
+
+Ela nao depende da posicao da lampada no mundo. O que importa e apenas o vetor da direcao da luz.
+
+Na implementacao atual, a engine usa:
+
+- direcao da luz
+- cor da luz
+- cor ambiente
+
+Esse conjunto ja permite um `Lambert` simples:
+
+- faces voltadas para a luz ficam mais claras
+- faces opostas ficam mais escuras
 
 ### O que e `Command Buffer`
 
@@ -505,6 +539,7 @@ A arquitetura evoluiu em camadas:
 7. preparamos UVs e `TextureAsset` para texturas reais
 8. ligamos o primeiro `combined image sampler` no material
 9. ligamos o primeiro `depth buffer` real no renderer
+10. ligamos a primeira iluminacao basica com `normal` e luz direcional
 
 O motivo principal e evitar crescimento em cima de uma base fraca.
 
@@ -541,6 +576,8 @@ Ainda nao temos:
 - carregamento de modelo externo
 - carregador de imagem de arquivo real
 - camera em perspectiva e uso real de profundidade para objetos 3D
+- sistema formal de luzes na cena
+- especular, normal map ou materiais PBR
 
 Ou seja: a base ja e bem melhor do que um tutorial puro, mas ainda esta numa fase inicial de engine.
 
@@ -553,6 +590,7 @@ Os proximos passos mais naturais sao:
 - depth buffer
 - camera controlavel
 - perspectiva e meshes com profundidade real
+- sistema de luz na cena e materiais mais ricos
 - carregamento de malha externa
 - cena com mais componentes
 
