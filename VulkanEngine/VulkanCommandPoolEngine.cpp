@@ -167,7 +167,7 @@ void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer,
             nullptr);
 
         MeshPushConstants pushConstants{};
-        pushConstants.model = pCore->scene().modelMatrixForObject(objectIndex);
+        pushConstants.model = transpose(pCore->scene().modelMatrixForObject(objectIndex));
         memcpy(pushConstants.baseColor, material->baseColor, sizeof(pushConstants.baseColor));
         vkCmdPushConstants(
             commandBuffer,

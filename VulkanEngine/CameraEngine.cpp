@@ -44,6 +44,37 @@ void CameraEngine::shutdown()
     }
 }
 
+void CameraEngine::updateFromInput(float deltaTimeSeconds)
+{
+    const float movementStep = movementSpeed_ * deltaTimeSeconds;
+    const float zoomStep = zoomSpeed_ * deltaTimeSeconds;
+
+    if (pCore->window().isKeyPressed(GLFW_KEY_A))
+    {
+        position_[0] -= movementStep;
+    }
+    if (pCore->window().isKeyPressed(GLFW_KEY_D))
+    {
+        position_[0] += movementStep;
+    }
+    if (pCore->window().isKeyPressed(GLFW_KEY_W))
+    {
+        position_[2] = std::max(position_[2] - zoomStep, 0.6f);
+    }
+    if (pCore->window().isKeyPressed(GLFW_KEY_S))
+    {
+        position_[2] = std::min(position_[2] + zoomStep, 6.0f);
+    }
+    if (pCore->window().isKeyPressed(GLFW_KEY_Q))
+    {
+        position_[1] -= movementStep;
+    }
+    if (pCore->window().isKeyPressed(GLFW_KEY_E))
+    {
+        position_[1] += movementStep;
+    }
+}
+
 void CameraEngine::updateUniformBuffer(uint32_t currentFrame)
 {
     UniformBufferObject ubo{};
@@ -52,24 +83,50 @@ void CameraEngine::updateUniformBuffer(uint32_t currentFrame)
         ? 1.0f
         : static_cast<float>(extent.width) / static_cast<float>(extent.height);
 
-    ubo.view = Mat4::translation(0.0f, 0.0f, -2.5f);
-    ubo.projection = Mat4::perspective(3.14159265f / 3.0f, aspectRatio, 0.1f, 10.0f);
-    ubo.projection.elements[5] *= -1.0f;
-    ubo.viewProjection = multiply(ubo.projection, ubo.view);
-    ubo.lightDirection[0] = -0.45f;
-    ubo.lightDirection[1] = -0.8f;
-    ubo.lightDirection[2] = -0.35f;
+    constexpr float kFovRadians = 3.14159265f / 3.0f;
+    constexpr float kNearPlane = 0.1f;
+    constexpr float kFarPlane = 10.0f;
+
+    Mat4 view = Mat4::translation(-position_[0], -position_[1], -position_[2]);
+    Mat4 projection = Mat4::perspective(kFovRadians, aspectRatio, kNearPlane, kFarPlane);
+    Mat4 viewProjection = multiply(view, projection);
+
+    ubo.view = transpose(view);
+    ubo.projection = transpose(projection);
+    ubo.viewProjection = transpose(viewProjection);
+    ubo.cameraPosition[0] = position_[0];
+    ubo.cameraPosition[1] = position_[1];
+    ubo.cameraPosition[2] = position_[2];
+    ubo.cameraPosition[3] = 1.0f;
+    ubo.projectionParams[0] = aspectRatio;
+    ubo.projectionParams[1] = std::tan(kFovRadians * 0.5f);
+    ubo.projectionParams[2] = kNearPlane;
+    ubo.projectionParams[3] = kFarPlane;
+    ubo.lightDirection[0] = 0.0f;
+    ubo.lightDirection[1] = 0.0f;
+    ubo.lightDirection[2] = -1.0f;
     ubo.lightDirection[3] = 0.0f;
     ubo.lightColor[0] = 1.0f;
-    ubo.lightColor[1] = 0.98f;
-    ubo.lightColor[2] = 0.92f;
+    ubo.lightColor[1] = 1.0f;
+    ubo.lightColor[2] = 1.0f;
     ubo.lightColor[3] = 1.0f;
-    ubo.ambientColor[0] = 0.22f;
-    ubo.ambientColor[1] = 0.24f;
-    ubo.ambientColor[2] = 0.30f;
+    ubo.ambientColor[0] = 1.0f;
+    ubo.ambientColor[1] = 1.0f;
+    ubo.ambientColor[2] = 1.0f;
     ubo.ambientColor[3] = 1.0f;
+    ubo.debugOptions[0] = static_cast<float>(debugRenderMode_);
 
     uniformBuffers[currentFrame].write(&ubo, sizeof(ubo));
+}
+
+void CameraEngine::setDebugRenderMode(DebugRenderMode mode)
+{
+    debugRenderMode_ = mode;
+}
+
+CameraEngine::DebugRenderMode CameraEngine::debugRenderMode() const
+{
+    return debugRenderMode_;
 }
 
 VkDescriptorSetLayout CameraEngine::descriptorSetLayoutHandle() const

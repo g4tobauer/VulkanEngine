@@ -80,4 +80,9 @@ void WindowEngine::clearFramebufferResized()
 	framebufferResized = false;
 }
 
+bool WindowEngine::isKeyPressed(int key) const
+{
+    return pWindow != nullptr && glfwGetKey(pWindow, key) == GLFW_PRESS;
+}
+
 #pragma endregion

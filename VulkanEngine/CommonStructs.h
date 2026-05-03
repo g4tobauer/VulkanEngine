@@ -139,8 +139,8 @@ struct Mat4
         return Mat4{{
             1.0f / (aspect * tanHalfFov), 0.0f, 0.0f, 0.0f,
             0.0f, 1.0f / tanHalfFov, 0.0f, 0.0f,
-            0.0f, 0.0f, -(farPlane + nearPlane) / (farPlane - nearPlane), -1.0f,
-            0.0f, 0.0f, -(2.0f * farPlane * nearPlane) / (farPlane - nearPlane), 0.0f
+            0.0f, 0.0f, farPlane / (nearPlane - farPlane), -1.0f,
+            0.0f, 0.0f, (farPlane * nearPlane) / (nearPlane - farPlane), 0.0f
         }};
     }
 };
@@ -165,14 +165,33 @@ inline Mat4 multiply(const Mat4& lhs, const Mat4& rhs)
     return result;
 }
 
+inline Mat4 transpose(const Mat4& matrix)
+{
+    Mat4 result{};
+
+    for (int row = 0; row < 4; ++row)
+    {
+        for (int column = 0; column < 4; ++column)
+        {
+            result.elements[row * 4 + column] = matrix.elements[column * 4 + row];
+        }
+    }
+
+    return result;
+}
+
+
 struct UniformBufferObject
 {
     Mat4 view;
     Mat4 projection;
     Mat4 viewProjection;
+    float cameraPosition[4] = { 0.0f, 0.0f, 2.5f, 1.0f };
+    float projectionParams[4] = { 1.0f, 0.57735026f, 0.1f, 10.0f };
     float lightDirection[4] = { -0.45f, -0.8f, -0.35f, 0.0f };
     float lightColor[4] = { 1.0f, 0.98f, 0.92f, 1.0f };
     float ambientColor[4] = { 0.22f, 0.24f, 0.3f, 1.0f };
+    float debugOptions[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 };
 
 struct MeshPushConstants
@@ -198,9 +217,9 @@ struct Transform
     {
         return multiply(
             multiply(
-                Mat4::translation(position[0], position[1], position[2]),
+                Mat4::scale(scale[0], scale[1], scale[2]),
                 Mat4::rotationZ(rotationRadians)),
-            Mat4::scale(scale[0], scale[1], scale[2]));
+            Mat4::translation(position[0], position[1], position[2]));
     }
 };
 

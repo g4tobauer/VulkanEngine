@@ -83,6 +83,7 @@ Hoje o projeto ja:
 - primeira base 3D simples com vertices em `vec3`, camera em perspectiva e objetos separados em profundidade
 - primeira malha 3D de validacao com cubo indexado e multiplos objetos compartilhando a mesma malha
 - primeira iluminacao basica com `normal` por vertice e luz direcional simples
+- primeira camera controlavel por input para inspecao da cena
 
 ### Fase atual em andamento
 
@@ -453,6 +454,7 @@ Coisas que devemos perseguir desde cedo:
 - [~] primeira camera em perspectiva e uso real de profundidade
 - [~] primeira malha 3D mais representativa para validar a arquitetura
 - [~] primeira base de iluminacao para sair do flat color puro
+- [~] primeira usabilidade real de navegacao na cena
 
 ## Como Vamos Trabalhar
 

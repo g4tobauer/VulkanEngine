@@ -36,6 +36,22 @@ struct Mesh
         return mesh;
     }
 
+    static Mesh createDiagnosticQuad()
+    {
+        Mesh mesh{};
+        mesh.vertices = {
+            Vertex{{-0.45f, -0.45f, 0.0f }, { 1.0f, 0.3f, 0.3f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f }},
+            Vertex{{ 0.45f, -0.45f, 0.0f }, { 0.3f, 1.0f, 0.3f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f }},
+            Vertex{{ 0.45f,  0.45f, 0.0f }, { 0.3f, 0.3f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }},
+            Vertex{{-0.45f,  0.45f, 0.0f }, { 1.0f, 0.9f, 0.3f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }}
+        };
+        mesh.indices = {
+            0, 1, 2,
+            2, 3, 0
+        };
+        return mesh;
+    }
+
     static Mesh createColoredCube()
     {
         Mesh mesh{};

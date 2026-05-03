@@ -29,6 +29,20 @@
       "problemMatcher": "$msCompile"
     },
     {
+      "label": "CMake Rebuild Debug",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" -arch=x64 && cmake --build build\\vs2022-x64 --config Debug --clean-first"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "CMake Configure",
+      "problemMatcher": "$msCompile"
+    },
+    {
       "label": "CMake Build Release",
       "type": "shell",
       "command": "cmd",

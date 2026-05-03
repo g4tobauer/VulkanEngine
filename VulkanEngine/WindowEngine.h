@@ -20,6 +20,7 @@ public:
 	VkSurfaceKHR surfaceHandle() const;
 	bool isFramebufferResized() const;
 	void clearFramebufferResized();
+	bool isKeyPressed(int key) const;
 
 private:
 	bool framebufferResized = false;

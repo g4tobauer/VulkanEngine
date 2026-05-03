@@ -6,16 +6,25 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/vs2022-x64/Debug/VulkanEngineApp.exe",
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/build/vs2022-x64/Debug",
       "console": "integratedTerminal",
       "preLaunchTask": "CMake Build Debug"
+    },
+    {
+      "name": "VulkanEngine Debug (Rebuild)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/vs2022-x64/Debug/VulkanEngineApp.exe",
+      "cwd": "${workspaceFolder}/build/vs2022-x64/Debug",
+      "console": "integratedTerminal",
+      "preLaunchTask": "CMake Rebuild Debug"
     },
     {
       "name": "VulkanEngine Release",
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/vs2022-x64/Release/VulkanEngineApp.exe",
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/build/vs2022-x64/Release",
       "console": "integratedTerminal",
       "preLaunchTask": "CMake Build Release"
     }

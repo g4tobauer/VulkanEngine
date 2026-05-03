@@ -17,6 +17,7 @@ Hoje ela ja tem:
 - primeira base 3D simples com perspectiva
 - primeira malha 3D de validacao com cubo
 - primeira iluminacao basica
+- primeira camera controlavel por teclado
 - pipeline grafico configurado por shaders SPIR-V
 
 O objetivo desta documentacao e ajudar quem for estudar o projeto a entender:
@@ -26,6 +27,10 @@ O objetivo desta documentacao e ajudar quem for estudar o projeto a entender:
 - quem chama quem
 - por que essa estrutura foi escolhida
 - o significado dos termos tecnicos principais
+
+Para historico de bugs, correcoes importantes e post-mortems tecnicos, veja tambem [BUGFIXES_AND_POSTMORTEMS.md](C:/Users/Joao/source/repos/g4tobauer/VulkanEngine/BUGFIXES_AND_POSTMORTEMS.md).
+
+Para a convencao formal de matrizes, camera, espacos e modos de debug visual, veja [MATHEMATICAL_CONVENTIONS.md](C:/Users/Joao/source/repos/g4tobauer/VulkanEngine/MATHEMATICAL_CONVENTIONS.md).
 
 ## Fluxo principal da engine
 
@@ -163,6 +168,7 @@ Responsabilidade:
 
 - manter uniform buffers por frame
 - enviar view/projection para o shader
+- controlar um estado simples de camera para navegacao
 
 Por que existe:
 
@@ -289,6 +295,28 @@ No projeto atual, ele carrega:
 - direcao da luz
 - cor da luz
 - cor ambiente
+
+### O que e `Camera`
+
+`Camera` e o ponto de vista da cena.
+
+Ela define:
+
+- de onde estamos olhando
+- em que espaco a cena vai ser projetada
+- como o mundo 3D vira imagem 2D
+
+Na implementacao atual, a camera ainda e simples, mas ja possui:
+
+- posicao no mundo
+- projecao em perspectiva
+- controle por teclado
+
+Controles atuais:
+
+- `W` e `S`: andar para frente e para tras
+- `A` e `D`: mover para esquerda e direita
+- `Q` e `E`: mover para baixo e para cima
 
 Esses dados costumam mudar por frame ou por camera.
 
@@ -616,3 +644,4 @@ Na cena padrao atual, o renderer desenha dois cubos que compartilham a mesma mal
 - textura placeholder
 - profundidade
 - perspectiva
+- navegacao da camera

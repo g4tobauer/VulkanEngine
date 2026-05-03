@@ -23,12 +23,12 @@ void SceneEngine::createDefaultScene()
     Material leftMaterial{};
     leftMaterial.baseColor[0] = 1.0f;
     leftMaterial.baseColor[1] = 0.85f;
-    leftMaterial.baseColor[2] = 0.7f;
+    leftMaterial.baseColor[2] = 0.75f;
     leftMaterial.baseColorTextureAssetId = checkerTextureId;
 
     Material rightMaterial{};
-    rightMaterial.baseColor[0] = 0.7f;
-    rightMaterial.baseColor[1] = 0.85f;
+    rightMaterial.baseColor[0] = 0.72f;
+    rightMaterial.baseColor[1] = 0.88f;
     rightMaterial.baseColor[2] = 1.0f;
     rightMaterial.baseColorTextureAssetId = checkerTextureId;
 
@@ -36,21 +36,22 @@ void SceneEngine::createDefaultScene()
     const MaterialAssetId rightMaterialId = pCore->assets().createMaterialAsset("RightMaterial", rightMaterial);
 
     Transform leftTransform{};
-    leftTransform.position[0] = -0.55f;
+    leftTransform.position[0] = -0.5f;
     leftTransform.position[1] = 0.0f;
     leftTransform.position[2] = 0.15f;
-    leftTransform.scale[0] = 0.75f;
-    leftTransform.scale[1] = 0.75f;
-    leftTransform.scale[2] = 0.75f;
+    leftTransform.scale[0] = 0.55f;
+    leftTransform.scale[1] = 0.55f;
+    leftTransform.scale[2] = 0.55f;
+    leftTransform.rotationRadians = -0.18f;
 
     Transform rightTransform{};
-    rightTransform.position[0] = 0.55f;
+    rightTransform.position[0] = 0.5f;
     rightTransform.position[1] = 0.0f;
-    rightTransform.position[2] = -0.35f;
-    rightTransform.scale[0] = 0.75f;
-    rightTransform.scale[1] = 0.75f;
-    rightTransform.scale[2] = 0.75f;
-    rightTransform.rotationRadians = 0.45f;
+    rightTransform.position[2] = -0.15f;
+    rightTransform.scale[0] = 0.55f;
+    rightTransform.scale[1] = 0.55f;
+    rightTransform.scale[2] = 0.55f;
+    rightTransform.rotationRadians = 0.3f;
 
     createObject("LeftCube", cubeAssetId, leftMaterialId, leftTransform);
     createObject("RightCube", cubeAssetId, rightMaterialId, rightTransform);
