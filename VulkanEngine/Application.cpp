@@ -29,6 +29,7 @@ void Application::mainLoop()
 	EntityId animatedObjectId = 0;
 	auto previousFrameTime = std::chrono::steady_clock::now();
 	bool debugKeyLatch[5] = { false, false, false, false, false };
+	bool projectionToggleLatch = false;
 
 	if (scene.renderObjects().size() > 1)
 	{
@@ -61,6 +62,13 @@ void Application::mainLoop()
 
 			debugKeyLatch[i] = pressed;
 		}
+
+		const bool projectionTogglePressed = window.isKeyPressed(GLFW_KEY_F6);
+		if (projectionTogglePressed && !projectionToggleLatch)
+		{
+			camera.toggleProjectionMode();
+		}
+		projectionToggleLatch = projectionTogglePressed;
 
 		if (animatedObjectId != 0)
 		{

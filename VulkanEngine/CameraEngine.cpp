@@ -102,6 +102,8 @@ void CameraEngine::updateUniformBuffer(uint32_t currentFrame)
     ubo.projectionParams[1] = std::tan(kFovRadians * 0.5f);
     ubo.projectionParams[2] = kNearPlane;
     ubo.projectionParams[3] = kFarPlane;
+    ubo.cameraOptions[0] = static_cast<float>(projectionMode_);
+    ubo.cameraOptions[1] = position_[2];
     ubo.lightDirection[0] = 0.0f;
     ubo.lightDirection[1] = 0.0f;
     ubo.lightDirection[2] = -1.0f;
@@ -127,6 +129,23 @@ void CameraEngine::setDebugRenderMode(DebugRenderMode mode)
 CameraEngine::DebugRenderMode CameraEngine::debugRenderMode() const
 {
     return debugRenderMode_;
+}
+
+void CameraEngine::setProjectionMode(ProjectionMode mode)
+{
+    projectionMode_ = mode;
+}
+
+void CameraEngine::toggleProjectionMode()
+{
+    projectionMode_ = projectionMode_ == ProjectionMode::Orthographic
+        ? ProjectionMode::Perspective
+        : ProjectionMode::Orthographic;
+}
+
+CameraEngine::ProjectionMode CameraEngine::projectionMode() const
+{
+    return projectionMode_;
 }
 
 VkDescriptorSetLayout CameraEngine::descriptorSetLayoutHandle() const

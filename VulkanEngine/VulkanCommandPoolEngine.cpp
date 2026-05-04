@@ -167,7 +167,18 @@ void VulkanCommandPoolEngine::recordCommandBuffer(VkCommandBuffer commandBuffer,
             nullptr);
 
         MeshPushConstants pushConstants{};
-        pushConstants.model = transpose(pCore->scene().modelMatrixForObject(objectIndex));
+        pushConstants.objectPosition[0] = object.transform.position[0];
+        pushConstants.objectPosition[1] = object.transform.position[1];
+        pushConstants.objectPosition[2] = object.transform.position[2];
+        pushConstants.objectPosition[3] = 1.0f;
+        pushConstants.objectScale[0] = object.transform.scale[0];
+        pushConstants.objectScale[1] = object.transform.scale[1];
+        pushConstants.objectScale[2] = object.transform.scale[2];
+        pushConstants.objectScale[3] = 0.0f;
+        pushConstants.objectRotation[0] = std::cos(object.transform.rotationRadians);
+        pushConstants.objectRotation[1] = std::sin(object.transform.rotationRadians);
+        pushConstants.objectRotation[2] = 0.0f;
+        pushConstants.objectRotation[3] = 0.0f;
         memcpy(pushConstants.baseColor, material->baseColor, sizeof(pushConstants.baseColor));
         vkCmdPushConstants(
             commandBuffer,

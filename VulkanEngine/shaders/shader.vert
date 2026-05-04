@@ -6,6 +6,7 @@ layout(binding = 0) uniform UniformBufferObject {
     mat4 viewProjection;
     vec4 cameraPosition;
     vec4 projectionParams;
+    vec4 cameraOptions;
     vec4 lightDirection;
     vec4 lightColor;
     vec4 ambientColor;
@@ -13,7 +14,9 @@ layout(binding = 0) uniform UniformBufferObject {
 } ubo;
 
 layout(push_constant) uniform MeshPushConstants {
-    mat4 model;
+    vec4 objectPosition;
+    vec4 objectScale;
+    vec4 objectRotation;
 } pushConstants;
 
 layout(location = 0) in vec3 inPosition;
@@ -25,23 +28,46 @@ layout(location = 1) out vec2 fragUv;
 layout(location = 2) out vec3 fragNormal;
 
 void main() {
-    vec4 worldPosition = pushConstants.model * vec4(inPosition, 1.0);
-    vec3 viewPosition = worldPosition.xyz - ubo.cameraPosition.xyz;
+    float rotationCos = pushConstants.objectRotation.x;
+    float rotationSin = pushConstants.objectRotation.y;
+
+    vec3 scaledPosition = inPosition * pushConstants.objectScale.xyz;
+    vec3 rotatedPosition = vec3(
+        (rotationCos * scaledPosition.x) - (rotationSin * scaledPosition.y),
+        (rotationSin * scaledPosition.x) + (rotationCos * scaledPosition.y),
+        scaledPosition.z);
+
+    vec3 worldPosition = rotatedPosition + pushConstants.objectPosition.xyz;
+    vec3 viewPosition = worldPosition - ubo.cameraPosition.xyz;
     float viewDepth = -viewPosition.z;
 
     float aspectRatio = ubo.projectionParams.x;
     float tanHalfFov = ubo.projectionParams.y;
     float nearPlane = ubo.projectionParams.z;
     float farPlane = ubo.projectionParams.w;
+    float orthoHalfHeight = max(ubo.cameraOptions.y, 0.001);
+    float orthoHalfWidth = max(aspectRatio * orthoHalfHeight, 0.001);
+    int projectionMode = int(ubo.cameraOptions.x + 0.5);
 
-    float clipX = viewPosition.x / (aspectRatio * tanHalfFov);
-    float clipY = viewPosition.y / tanHalfFov;
-    float clipZ = (farPlane / (farPlane - nearPlane)) * viewDepth -
-                  ((farPlane * nearPlane) / (farPlane - nearPlane));
-    float clipW = viewDepth;
+    if (projectionMode == 0) {
+        float clipX = viewPosition.x / orthoHalfWidth;
+        float clipY = viewPosition.y / orthoHalfHeight;
+        float clipZ = clamp((viewDepth - nearPlane) / (farPlane - nearPlane), 0.0, 1.0);
+        gl_Position = vec4(clipX, clipY, clipZ, 1.0);
+    } else {
+        float safeDepth = max(viewDepth, nearPlane + 0.001);
+        float ndcX = viewPosition.x / ((aspectRatio * tanHalfFov) * safeDepth);
+        float ndcY = viewPosition.y / (tanHalfFov * safeDepth);
+        float ndcZ = clamp((safeDepth - nearPlane) / (farPlane - nearPlane), 0.0, 1.0);
 
-    gl_Position = vec4(clipX, clipY, clipZ, clipW);
+        gl_Position = vec4(ndcX, ndcY, ndcZ, 1.0);
+    }
+
+    vec3 rotatedNormal = vec3(
+        (rotationCos * inNormal.x) - (rotationSin * inNormal.y),
+        (rotationSin * inNormal.x) + (rotationCos * inNormal.y),
+        inNormal.z);
     fragColor = inColor;
     fragUv = inUv;
-    fragNormal = normalize(mat3(pushConstants.model) * inNormal);
+    fragNormal = normalize(rotatedNormal);
 }

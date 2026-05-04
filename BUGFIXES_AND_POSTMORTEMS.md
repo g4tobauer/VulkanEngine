@@ -249,6 +249,12 @@ Depois desse incidente, a recomendacao de trabalho na engine e:
 3. nao subir camera, perspectiva, cubo, material e iluminacao tudo ao mesmo tempo
 4. documentar convencoes matematicas de forma explicita
 
+Tambem foi adicionado um caminho de depuracao melhor:
+
+- `debug render mode` com `F1` a `F5`
+- alternancia de projecao com `F6`
+- transform por objeto mais explicito no vertex shader para reduzir ambiguidade entre CPU e GPU
+
 ## Convencoes que precisam ficar claras no projeto
 
 O projeto deve deixar documentado, de forma objetiva:
@@ -268,4 +274,3 @@ Enquanto isso nao estiver absolutamente claro, bugs de camera e projecao tendem 
 - documentar formalmente a convencao matematica da engine
 - considerar migrar a camada de matematica para uma convencao unica e mais previsivel
 - adicionar asserts/logs de camera e matrizes em `Debug`
-

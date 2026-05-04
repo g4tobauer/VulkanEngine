@@ -8,6 +8,7 @@ layout(binding = 0) uniform UniformBufferObject {
     mat4 viewProjection;
     vec4 cameraPosition;
     vec4 projectionParams;
+    vec4 cameraOptions;
     vec4 lightDirection;
     vec4 lightColor;
     vec4 ambientColor;
@@ -15,7 +16,9 @@ layout(binding = 0) uniform UniformBufferObject {
 } ubo;
 
 layout(push_constant) uniform MeshPushConstants {
-    mat4 model;
+    vec4 objectPosition;
+    vec4 objectScale;
+    vec4 objectRotation;
     vec4 baseColor;
 } pushConstants;
 

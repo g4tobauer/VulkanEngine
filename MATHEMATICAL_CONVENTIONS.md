@@ -156,6 +156,7 @@ Controles atuais:
 - `F3`: visualizacao de normais
 - `F4`: visualizacao de UV
 - `F5`: visualizacao de profundidade
+- `F6`: alterna entre projecao ortografica e perspectiva
 
 Esses modos ajudam a responder perguntas como:
 
@@ -163,6 +164,26 @@ Esses modos ajudam a responder perguntas como:
 - a textura esta chegando?
 - as normais parecem corretas?
 - o depth buffer esta coerente?
+
+## Caminho temporario de estabilizacao da perspectiva
+
+Neste momento da evolucao da engine, a transformacao por objeto no vertex shader foi simplificada.
+
+Em vez de depender imediatamente de uma `model matrix` completa por `push constant`, o shader usa um transform explicito por objeto:
+
+- `objectPosition`
+- `objectScale`
+- `objectRotation` com `cos` e `sin`
+
+Isso foi feito para reduzir ambiguidades de convencao entre CPU e GPU enquanto a camada matematica ainda esta sendo consolidada.
+
+Nao e necessariamente a forma final da engine, mas e uma forma muito melhor de depurar porque:
+
+- deixa o fluxo local -> mundo mais visivel
+- reduz o numero de lugares onde um `transpose` pode confundir
+- isola melhor bugs de camera e projecao
+
+Quando a convencao matematica estiver completamente fechada, essa parte pode ser migrada de novo para uma representacao matricial mais formal, se fizer sentido.
 
 ## Recomendacao futura
 
@@ -172,4 +193,3 @@ Se quisermos reduzir risco estrutural, o melhor caminho e:
 - minimizar `transpose` manual
 - considerar uma camada matematica mais padronizada
 - manter shaders de debug sempre disponiveis
-

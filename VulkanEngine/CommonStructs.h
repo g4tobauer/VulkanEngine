@@ -188,6 +188,7 @@ struct UniformBufferObject
     Mat4 viewProjection;
     float cameraPosition[4] = { 0.0f, 0.0f, 2.5f, 1.0f };
     float projectionParams[4] = { 1.0f, 0.57735026f, 0.1f, 10.0f };
+    float cameraOptions[4] = { 0.0f, 2.5f, 0.0f, 0.0f };
     float lightDirection[4] = { -0.45f, -0.8f, -0.35f, 0.0f };
     float lightColor[4] = { 1.0f, 0.98f, 0.92f, 1.0f };
     float ambientColor[4] = { 0.22f, 0.24f, 0.3f, 1.0f };
@@ -196,7 +197,9 @@ struct UniformBufferObject
 
 struct MeshPushConstants
 {
-    Mat4 model;
+    float objectPosition[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    float objectScale[4] = { 1.0f, 1.0f, 1.0f, 0.0f };
+    float objectRotation[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
     float baseColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 };
 
