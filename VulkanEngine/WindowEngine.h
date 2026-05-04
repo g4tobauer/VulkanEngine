@@ -21,6 +21,8 @@ public:
 	bool isFramebufferResized() const;
 	void clearFramebufferResized();
 	bool isKeyPressed(int key) const;
+	bool isMouseButtonPressed(int button) const;
+	void cursorPosition(double& x, double& y) const;
 
 private:
 	bool framebufferResized = false;

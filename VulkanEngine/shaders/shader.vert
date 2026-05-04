@@ -5,6 +5,9 @@ layout(binding = 0) uniform UniformBufferObject {
     mat4 projection;
     mat4 viewProjection;
     vec4 cameraPosition;
+    vec4 cameraForward;
+    vec4 cameraRight;
+    vec4 cameraUp;
     vec4 projectionParams;
     vec4 cameraOptions;
     vec4 lightDirection;
@@ -38,8 +41,12 @@ void main() {
         scaledPosition.z);
 
     vec3 worldPosition = rotatedPosition + pushConstants.objectPosition.xyz;
-    vec3 viewPosition = worldPosition - ubo.cameraPosition.xyz;
-    float viewDepth = -viewPosition.z;
+    vec3 toCameraSpace = worldPosition - ubo.cameraPosition.xyz;
+    vec3 viewPosition = vec3(
+        dot(toCameraSpace, ubo.cameraRight.xyz),
+        dot(toCameraSpace, ubo.cameraUp.xyz),
+        dot(toCameraSpace, ubo.cameraForward.xyz));
+    float viewDepth = viewPosition.z;
 
     float aspectRatio = ubo.projectionParams.x;
     float tanHalfFov = ubo.projectionParams.y;

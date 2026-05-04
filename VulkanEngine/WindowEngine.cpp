@@ -85,4 +85,21 @@ bool WindowEngine::isKeyPressed(int key) const
     return pWindow != nullptr && glfwGetKey(pWindow, key) == GLFW_PRESS;
 }
 
+bool WindowEngine::isMouseButtonPressed(int button) const
+{
+    return pWindow != nullptr && glfwGetMouseButton(pWindow, button) == GLFW_PRESS;
+}
+
+void WindowEngine::cursorPosition(double& x, double& y) const
+{
+    if (pWindow == nullptr)
+    {
+        x = 0.0;
+        y = 0.0;
+        return;
+    }
+
+    glfwGetCursorPos(pWindow, &x, &y);
+}
+
 #pragma endregion

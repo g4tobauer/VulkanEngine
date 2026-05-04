@@ -7,6 +7,9 @@ layout(binding = 0) uniform UniformBufferObject {
     mat4 projection;
     mat4 viewProjection;
     vec4 cameraPosition;
+    vec4 cameraForward;
+    vec4 cameraRight;
+    vec4 cameraUp;
     vec4 projectionParams;
     vec4 cameraOptions;
     vec4 lightDirection;

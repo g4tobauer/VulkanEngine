@@ -157,6 +157,7 @@ Controles atuais:
 - `F4`: visualizacao de UV
 - `F5`: visualizacao de profundidade
 - `F6`: alterna entre projecao ortografica e perspectiva
+- `F7`: reseta a camera para a pose padrao do modo atual
 
 Esses modos ajudam a responder perguntas como:
 
@@ -164,6 +165,32 @@ Esses modos ajudam a responder perguntas como:
 - a textura esta chegando?
 - as normais parecem corretas?
 - o depth buffer esta coerente?
+
+No estado atual do projeto:
+
+- a perspectiva e o modo padrao
+- a ortografica continua disponivel como modo de diagnostico e inspecao
+
+## Camera 3D atual
+
+Em perspectiva, a camera agora tem orientacao propria.
+
+Controles atuais:
+
+- segurar `botao direito do mouse`: ativa `mouse look`
+- mover o mouse com o botao direito pressionado: gira a camera em `yaw/pitch`
+- `W/S`: anda para frente e para tras na direcao da camera
+- `A/D`: anda para os lados em relacao a camera
+- `Q/E`: sobe e desce no eixo vertical
+- `F7`: reseta posicao e orientacao
+
+Internamente, o shader nao usa apenas a posicao da camera. Ele tambem recebe:
+
+- `cameraForward`
+- `cameraRight`
+- `cameraUp`
+
+Esses vetores permitem converter o mundo para o espaco da camera de forma mais coerente com a orientacao atual.
 
 ## Caminho temporario de estabilizacao da perspectiva
 

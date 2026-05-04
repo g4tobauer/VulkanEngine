@@ -35,16 +35,23 @@ public:
     void setProjectionMode(ProjectionMode mode);
     void toggleProjectionMode();
     ProjectionMode projectionMode() const;
+    void reset();
 
     VkDescriptorSetLayout descriptorSetLayoutHandle() const;
     VkDescriptorSet descriptorSetForFrame(uint32_t frameIndex) const;
 
 private:
-    float position_[3] = { 0.0f, 0.0f, 2.5f };
-    float movementSpeed_ = 1.8f;
-    float zoomSpeed_ = 1.2f;
+    float position_[3] = { 0.0f, 0.0f, 3.25f };
+    float movementSpeed_ = 2.2f;
+    float zoomSpeed_ = 1.6f;
+    float yawRadians_ = 0.0f;
+    float pitchRadians_ = 0.0f;
+    float mouseSensitivity_ = 0.0035f;
+    bool mouseLookActive_ = false;
+    double lastCursorX_ = 0.0;
+    double lastCursorY_ = 0.0;
     DebugRenderMode debugRenderMode_ = DebugRenderMode::Lit;
-    ProjectionMode projectionMode_ = ProjectionMode::Orthographic;
+    ProjectionMode projectionMode_ = ProjectionMode::Perspective;
     VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
     VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
     std::vector<VulkanBuffer> uniformBuffers;
@@ -54,6 +61,7 @@ private:
     void createUniformBuffers();
     void createDescriptorPool();
     void createDescriptorSets();
+    void perspectiveBasis(float& forwardX, float& forwardY, float& forwardZ, float& rightX, float& rightY, float& rightZ, float& upX, float& upY, float& upZ) const;
 };
 
 #endif // !ENGINE_CAMERA

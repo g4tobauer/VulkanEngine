@@ -187,6 +187,9 @@ struct UniformBufferObject
     Mat4 projection;
     Mat4 viewProjection;
     float cameraPosition[4] = { 0.0f, 0.0f, 2.5f, 1.0f };
+    float cameraForward[4] = { 0.0f, 0.0f, -1.0f, 0.0f };
+    float cameraRight[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
+    float cameraUp[4] = { 0.0f, 1.0f, 0.0f, 0.0f };
     float projectionParams[4] = { 1.0f, 0.57735026f, 0.1f, 10.0f };
     float cameraOptions[4] = { 0.0f, 2.5f, 0.0f, 0.0f };
     float lightDirection[4] = { -0.45f, -0.8f, -0.35f, 0.0f };

@@ -35,26 +35,43 @@ void SceneEngine::createDefaultScene()
     const MaterialAssetId leftMaterialId = pCore->assets().createMaterialAsset("LeftMaterial", leftMaterial);
     const MaterialAssetId rightMaterialId = pCore->assets().createMaterialAsset("RightMaterial", rightMaterial);
 
+    Material centerMaterial{};
+    centerMaterial.baseColor[0] = 0.92f;
+    centerMaterial.baseColor[1] = 0.95f;
+    centerMaterial.baseColor[2] = 1.0f;
+    centerMaterial.baseColorTextureAssetId = checkerTextureId;
+    const MaterialAssetId centerMaterialId = pCore->assets().createMaterialAsset("CenterMaterial", centerMaterial);
+
     Transform leftTransform{};
-    leftTransform.position[0] = -0.5f;
-    leftTransform.position[1] = 0.0f;
-    leftTransform.position[2] = 0.15f;
-    leftTransform.scale[0] = 0.55f;
-    leftTransform.scale[1] = 0.55f;
-    leftTransform.scale[2] = 0.55f;
-    leftTransform.rotationRadians = -0.18f;
+    leftTransform.position[0] = -1.0f;
+    leftTransform.position[1] = -0.2f;
+    leftTransform.position[2] = 0.65f;
+    leftTransform.scale[0] = 0.62f;
+    leftTransform.scale[1] = 0.62f;
+    leftTransform.scale[2] = 0.62f;
+    leftTransform.rotationRadians = -0.32f;
 
     Transform rightTransform{};
-    rightTransform.position[0] = 0.5f;
-    rightTransform.position[1] = 0.0f;
-    rightTransform.position[2] = -0.15f;
-    rightTransform.scale[0] = 0.55f;
-    rightTransform.scale[1] = 0.55f;
-    rightTransform.scale[2] = 0.55f;
-    rightTransform.rotationRadians = 0.3f;
+    rightTransform.position[0] = 1.05f;
+    rightTransform.position[1] = 0.15f;
+    rightTransform.position[2] = -0.55f;
+    rightTransform.scale[0] = 0.58f;
+    rightTransform.scale[1] = 0.58f;
+    rightTransform.scale[2] = 0.58f;
+    rightTransform.rotationRadians = 0.38f;
+
+    Transform centerTransform{};
+    centerTransform.position[0] = 0.0f;
+    centerTransform.position[1] = 0.55f;
+    centerTransform.position[2] = 0.1f;
+    centerTransform.scale[0] = 0.42f;
+    centerTransform.scale[1] = 0.42f;
+    centerTransform.scale[2] = 0.42f;
+    centerTransform.rotationRadians = 0.12f;
 
     createObject("LeftCube", cubeAssetId, leftMaterialId, leftTransform);
     createObject("RightCube", cubeAssetId, rightMaterialId, rightTransform);
+    createObject("CenterCube", cubeAssetId, centerMaterialId, centerTransform);
 }
 
 void SceneEngine::clear()
